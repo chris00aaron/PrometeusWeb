@@ -45,7 +45,7 @@ public class Usuario {
     @Column(nullable = false, length = 40, unique = true)
     private String username;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 100)
     private String clave;
 
     @Enumerated(EnumType.STRING)
