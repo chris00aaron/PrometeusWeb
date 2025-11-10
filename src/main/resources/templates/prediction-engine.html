@@ -197,7 +197,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Refrigerant</label>
                             <div class="input-group">
-                                <input type="number" step="any" class="form-control" th:field="*{refrigeracion}" placeholder="Ej: 0.0">
+                                <input type="number" step="any" class="form-control" th:field="*{coolant}" placeholder="Ej: 0.0">
                                 <span class="input-group-text">L/min</span>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Direct-Axis Voltage (Vd)</label>
                             <div class="input-group">
-                                <input type="number" step="any" class="form-control" th:field="*{voltajeD}" placeholder="Ej: 100.0">
+                                <input type="number" step="any" class="form-control" th:field="*{u_d}" placeholder="Ej: 100.0">
                                 <span class="input-group-text">V</span>
                             </div>
                         </div>
@@ -213,7 +213,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Quadrature-Axis Voltage (Vq)</label>
                             <div class="input-group">
-                                <input type="number" step="any" class="form-control" th:field="*{voltajeQ}" placeholder="Ej: 50.0">
+                                <input type="number" step="any" class="form-control" th:field="*{u_q}" placeholder="Ej: 50.0">
                                 <span class="input-group-text">V</span>
                             </div>
                         </div>
@@ -221,7 +221,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Motor Speed</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" th:field="*{velocidad}" placeholder="Ej: 1000">
+                                <input type="number" class="form-control" th:field="*{motor_speed}" placeholder="Ej: 1000">
                                 <span class="input-group-text">RPM</span>
                             </div>
                         </div>
@@ -237,7 +237,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Direct-Axis Current (Id)</label>
                             <div class="input-group">
-                                <input type="number" step="any" class="form-control" th:field="*{corrienteD}" placeholder="Ej: 10.0">
+                                <input type="number" step="any" class="form-control" th:field="*{i_d}" placeholder="Ej: 10.0">
                                 <span class="input-group-text">A</span>
                             </div>
                         </div>
@@ -245,7 +245,7 @@
                         <div class="col-md-6">
                             <label class="form-label">Quadrature-Axis Current (Iq)</label>
                             <div class="input-group">
-                                <input type="number" step="any" class="form-control" th:field="*{corrienteQ}" placeholder="Ej: 8.0">
+                                <input type="number" step="any" class="form-control" th:field="*{i_q}" placeholder="Ej: 8.0">
                                 <span class="input-group-text">A</span>
                             </div>
                         </div>

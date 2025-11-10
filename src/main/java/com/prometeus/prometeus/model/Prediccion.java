@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,24 +44,30 @@ public class Prediccion {
     @Column(precision = 6, scale = 2, nullable = false)
     private BigDecimal ambiente;
 
+    @JsonProperty("coolant")
     @Column(precision = 6, scale = 2, nullable = false)
     private BigDecimal refrigeracion;
 
+    @JsonProperty("u_d")
     @Column(name = "voltaje_d",precision = 10, scale = 3, nullable = false)
     private BigDecimal voltajeD;
 
+    @JsonProperty("u_q")
     @Column(name = "voltaje_q",precision = 10, scale = 3, nullable = false)
     private BigDecimal voltajeQ;
 
+    @JsonProperty("motor_speed")
     @Column(nullable = false)
     private Integer velocidad;
 
     @Column(precision = 10, scale = 3, nullable = false)
     private BigDecimal torque;
 
+    @JsonProperty("i_d")
     @Column(name = "corriente_d", precision = 10, scale = 3, nullable = false)
     private BigDecimal corrienteD;
 
+    @JsonProperty("i_q")
     @Column(name = "corriente_q", precision = 10, scale = 3, nullable = false)
     private BigDecimal corrienteQ;
 

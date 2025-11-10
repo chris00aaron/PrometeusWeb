@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PrediccionRequest {
     private BigDecimal ambiente;
-    private BigDecimal refrigeracion;
-    private BigDecimal voltajeD;
-    private BigDecimal voltajeQ;
-    private Integer velocidad;
+    private BigDecimal coolant;
+    private BigDecimal u_d;
+    private BigDecimal u_q;
+    private Integer motor_speed;
     private BigDecimal torque;
-    private BigDecimal corrienteD;
-    private BigDecimal corrienteQ;
+    private BigDecimal i_d;
+    private BigDecimal i_q;
 }

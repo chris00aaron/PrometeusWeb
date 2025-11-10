@@ -3,7 +3,9 @@ package com.prometeus.prometeus.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.prometeus.prometeus.dto.PrediccionRequest;
 import com.prometeus.prometeus.model.Prediccion;
@@ -11,6 +13,8 @@ import com.prometeus.prometeus.model.Usuario;
 import com.prometeus.prometeus.repository.PrediccionRepository;
 import com.prometeus.prometeus.repository.UsuarioRepository;
 import java.util.List;
+import org.json.JSONObject;
+
 
 @Service
 public class PrediccionService {
@@ -29,17 +33,15 @@ public class PrediccionService {
 
         // 1. LLAMAR A LA API DE PYTHON (Simulación)
         // Aquí iría tu lógica con RestTemplate o WebClient
-        // ResponseEntity<String> response = restTemplate.postForEntity("http://api-python/predict", dto, String.class);
-        // BigDecimal temperaturaPredicha = new BigDecimal(response.getBody());
-        
-        // ---- Simulación ----
-        // Simulamos una temperatura basada en el torque y el ambiente
-        BigDecimal tempBase = new BigDecimal("65.0");
-        BigDecimal torqueFactor = dto.getTorque().divide(new BigDecimal("10.0"), 2, RoundingMode.HALF_UP);
-        BigDecimal ambientFactor = dto.getAmbiente().divide(new BigDecimal("20.0"), 2, RoundingMode.HALF_UP);
-        BigDecimal temperaturaPredicha = tempBase.add(torqueFactor).add(ambientFactor);
-        // --- Fin Simulación ---
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.postForEntity("https://b4aef5d54b69.ngrok-free.app/predecir/", dto, String.class);
+        JSONObject json = new JSONObject(response.getBody());
+        BigDecimal temperaturaPredicha = json
+            .getJSONObject("temperatura_predicha")
+            .getBigDecimal("_Output__stator_winding");
 
+temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
+        
         // 2. BUSCAR UN USUARIO (Para pruebas)
         // Como no tienes login, buscamos un usuario fijo (ej: ID 1).
         // ¡ASEGÚRATE DE QUE ESTE USUARIO EXISTA EN TU BD PARA PROBAR! (Ver paso 5)
@@ -49,13 +51,13 @@ public class PrediccionService {
         // 3. CONSTRUIR LA ENTIDAD PREDICCION
         Prediccion nuevaPrediccion = Prediccion.builder()
                 .ambiente(dto.getAmbiente())
-                .refrigeracion(dto.getRefrigeracion())
-                .voltajeD(dto.getVoltajeD())
-                .voltajeQ(dto.getVoltajeQ())
-                .velocidad(dto.getVelocidad())
+                .refrigeracion(dto.getCoolant())
+                .voltajeD(dto.getU_d())
+                .voltajeQ(dto.getU_q())
+                .velocidad(dto.getMotor_speed())
                 .torque(dto.getTorque())
-                .corrienteD(dto.getCorrienteD())
-                .corrienteQ(dto.getCorrienteQ())
+                .corrienteD(dto.getI_d())
+                .corrienteQ(dto.getI_q())
                 .temperatura(temperaturaPredicha) // El resultado de la API
                 .usuario(usuarioPrueba)           // El usuario de prueba
                 // 'uuid' y 'fechaCreacion' se manejan automáticamente
