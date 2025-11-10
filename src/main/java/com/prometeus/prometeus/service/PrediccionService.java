@@ -25,7 +25,7 @@ public class PrediccionService {
     /**
      * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el resultado.
      */
-    public BigDecimal getPredictionAndSave(PrediccionRequest dto) {
+    public BigDecimal getPredictionAndSave(PrediccionRequest dto, Long userId) {
 
         // 1. LLAMAR A LA API DE PYTHON (Simulación)
         // Aquí iría tu lógica con RestTemplate o WebClient
@@ -43,7 +43,7 @@ public class PrediccionService {
         // 2. BUSCAR UN USUARIO (Para pruebas)
         // Como no tienes login, buscamos un usuario fijo (ej: ID 1).
         // ¡ASEGÚRATE DE QUE ESTE USUARIO EXISTA EN TU BD PARA PROBAR! (Ver paso 5)
-        Usuario usuarioPrueba = usuarioRepository.findById(1L)
+        Usuario usuarioPrueba = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario de prueba ID 1 no encontrado."));
 
         // 3. CONSTRUIR LA ENTIDAD PREDICCION

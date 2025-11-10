@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.prometeus.prometeus.dto.PrediccionRequest;
 import com.prometeus.prometeus.model.Prediccion;
+import com.prometeus.prometeus.model.Usuario;
 import com.prometeus.prometeus.service.PrediccionService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PrediccionController {
@@ -31,10 +34,11 @@ public class PrediccionController {
     }
 
     @PostMapping("/predict")
-    public String handlePredictionSubmit(@ModelAttribute PrediccionRequest predictionRequest, Model model) {
+    public String handlePredictionSubmit(@ModelAttribute PrediccionRequest predictionRequest, Model model, HttpSession sesion) {
+        Long userId = ((Usuario) sesion.getAttribute("user")).getId();
         
         // 1. Llama al servicio, que ahora hace todo (API + Guardar)
-        BigDecimal result = prediccionService.getPredictionAndSave(predictionRequest);
+        BigDecimal result = prediccionService.getPredictionAndSave(predictionRequest, userId);
         
         // 2. Devuelve los datos a la vista
         model.addAttribute("predictionRequest", predictionRequest); // Mantiene los datos en el formulario
@@ -49,9 +53,8 @@ public class PrediccionController {
     }
 
     @GetMapping("/history")
-    public String showHistory(Model model) {
-        // 1. Por ahora, seguimos usando el ID de usuario 1 (el mismo de tus pruebas)
-        Long userId = 1L; 
+    public String showHistory(Model model, HttpSession sesion) {
+        Long userId = ((Usuario) sesion.getAttribute("user")).getId();
         
         // 2. Llama al servicio para obtener el historial
         List<Prediccion> userHistory = prediccionService.getHistoryForUser(userId);
