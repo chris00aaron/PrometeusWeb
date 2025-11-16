@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History - DoperPillar</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .sidebar {
+            background-color: #1a1464;
+            min-height: 100vh;
+            width: 250px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px 0;
+        }
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            color: white;
+        }
+        .sidebar .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            background-color: #ff6b35;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        .sidebar .logo-text h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+        .sidebar .logo-text small {
+            color: #888;
+            font-size: 0.75rem;
+        }
+        .nav-item {
+            margin: 5px 15px;
+        }
+        .nav-link {
+            color: #ddd;
+            padding: 12px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+        }
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .nav-link.active {
+            background-color: #ff6b35;
+            color: white;
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 20px 40px;
+        }
+        .top-bar {
+            background-color: #0a0a0a;
+            color: white;
+            padding: 10px 40px;
+            margin-left: 250px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .form-control, .form-select {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            background-color: #fef5f5;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
+        }
+        .input-group-text {
+            background-color: transparent;
+            border: 1px solid #e0e0e0;
+            border-left: none;
+            color: #666;
+        }
+        .btn-predict {
+            background-color: #ff6b35;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .btn-predict:hover {
+            background-color: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+        .prediction-area {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .prediction-area i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        .logout-btn {
+            background-color: rgba(255, 107, 53, 0.2);
+            color: #ff6b35;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            margin-top: auto;
+            margin-bottom: 20px;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+        .logout-btn:hover {
+            background-color: rgba(255, 107, 53, 0.3);
+        }
+        .sidebar-bottom {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .prediction-result-area { text-align: center; padding: 40px 20px; }
+        .prediction-result-value { font-size: 3.5rem; font-weight: 700; color: #1a1464; margin-bottom: 10px; }
+        .prediction-result-label { font-size: 1.2rem; color: #ff6b35; font-weight: 500; }
+        .prediction-placeholder { text-align: center; padding: 60px 20px; color: #999; }
+        .prediction-placeholder i { font-size: 3rem; margin-bottom: 20px; color: #ddd; }
+    </style>
+</head>
+<body>
+    
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-2">Prediction History</h2>
+                <p class="text-muted mb-4">Showing all predictions for Test User</p>
+            </div>
+            <div>
+                <a th:href="@{/predict}" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i>
+                    New Prediction
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">History Log</h5>
+            </div>
+            <div class="card-body p-0">
+                
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date / Time</th>
+                                <th>Ambient (°C)</th>
+                                <th>Torque (N·m)</th>
+                                <th>Motor Speed (RPM)</th>
+                                <th>Predicted Temp (°C)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${predictions}">
+                                <td th:text="${#temporals.format(p.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${p.ambiente}"></td>
+                                <td th:text="${p.torque}"></td>
+                                <td th:text="${p.velocidad}"></td>
+                                <td>
+                                    <strong class="text-danger" th:text="${p.temperatura}"></strong>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${predictions.isEmpty()}">
+                                <td colspan="5" class="text-center text-muted p-4">
+                                    No predictions found.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

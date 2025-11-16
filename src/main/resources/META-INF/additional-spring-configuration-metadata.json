@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "service.api-prediction.base-url",
+    "type": "java.lang.String",
+    "description": "Es la direccion base (path)  o host donde se encuentra la API de predicción"
+  },
+  {
+    "name": "service.prediction.path",
+    "type": "java.lang.String",
+    "description": "Es la ruta del endpoint que permitira predecir"
+  }
+]}
