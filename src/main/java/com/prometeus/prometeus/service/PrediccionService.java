@@ -2,7 +2,10 @@ package com.prometeus.prometeus.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,23 +16,20 @@ import com.prometeus.prometeus.model.Usuario;
 import com.prometeus.prometeus.repository.PrediccionRepository;
 import com.prometeus.prometeus.repository.UsuarioRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import org.json.JSONObject;
-
-@AllArgsConstructor
+@RequiredArgsConstructor
 
 @Service
 public class PrediccionService {
     private final PrediccionRepository prediccionRepository;
     private final UsuarioRepository usuarioRepository;
 
-    /*@Value("${service.prediction.base-url}")
+    @Value("${service.prediction.base-url}")
     private String baseUrl;
 
     @Value("${service.prediction.path}")
-    private String predictionPath;*/
+    private String predictionPath;
 
     /**
      * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el resultado.
@@ -39,7 +39,7 @@ public class PrediccionService {
         // 1. LLAMAR A LA API DE PYTHON (Simulación)
         // Aquí iría tu lógica con RestTemplate o WebClient
         RestTemplate restTemplate = new RestTemplate();
-        String urlCompleto = "http://localhost:8000/predecir/";
+        String urlCompleto = baseUrl+predictionPath;
         ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
         
         JSONObject json = new JSONObject(response.getBody());
