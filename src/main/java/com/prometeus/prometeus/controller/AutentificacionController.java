@@ -24,12 +24,13 @@ public class AutentificacionController {
     private final UsuarioService usuarioService;
 
     @GetMapping("/")
-    public String getLogin() {
+    public String getLogin(Model model) {
+        model.addAttribute("loginDTO", new LoginDTO());
         return "login";
     }
 
     @PostMapping("/login")
-    public String validarLogin(@ModelAttribute LoginDTO loginDTO, RedirectAttributes redirectAttrs,HttpSession sesion, Model model) {
+    public String validarLogin(@ModelAttribute("loginDTO") LoginDTO loginDTO,HttpSession sesion, Model model) {
         log.info("DTO : {}", loginDTO);
 
         if (!usuarioService.validarCredenciales(loginDTO.getUsername(), loginDTO.getClave())) {
@@ -39,7 +40,6 @@ public class AutentificacionController {
 
         Usuario usuario = usuarioService.findByUsername(loginDTO.getUsername()).get();
         sesion.setAttribute("user", usuario);
-
         return "redirect:/predict";
     }
 }

@@ -7,44 +7,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 import com.prometeus.prometeus.dto.PrediccionRequest;
 import com.prometeus.prometeus.model.Prediccion;
 import com.prometeus.prometeus.model.Usuario;
 import com.prometeus.prometeus.repository.PrediccionRepository;
 import com.prometeus.prometeus.repository.UsuarioRepository;
+
+import lombok.AllArgsConstructor;
+
 import java.util.List;
 import org.json.JSONObject;
 
-<<<<<<< Updated upstream
-=======
 @AllArgsConstructor
->>>>>>> Stashed changes
 
 @Service
 public class PrediccionService {
     private final PrediccionRepository prediccionRepository;
     private final UsuarioRepository usuarioRepository;
 
-<<<<<<< Updated upstream
-    public PrediccionService(PrediccionRepository prediccionRepository, UsuarioRepository usuarioRepository) {
-        this.prediccionRepository = prediccionRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
-
-    /**
-     * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el resultado.
-     */
-    public BigDecimal getPredictionAndSave(PrediccionRequest dto, Long userId) {
-
-        // 1. LLAMAR A LA API DE PYTHON (Simulación)
-        // Aquí iría tu lógica con RestTemplate o WebClient
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity("https://b4aef5d54b69.ngrok-free.app/predecir/", dto, String.class);
-=======
     /*@Value("${service.prediction.base-url}")
     private String baseUrl;
 
@@ -62,13 +42,12 @@ public class PrediccionService {
         String urlCompleto = "http://localhost:8000/predecir/";
         ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
         
->>>>>>> Stashed changes
         JSONObject json = new JSONObject(response.getBody());
         BigDecimal temperaturaPredicha = json
             .getJSONObject("temperatura_predicha")
             .getBigDecimal("_Output__stator_winding");
 
-temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
+        temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
         
         // 2. BUSCAR UN USUARIO (Para pruebas)
         // Como no tienes login, buscamos un usuario fijo (ej: ID 1).
@@ -101,8 +80,4 @@ temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
     public List<Prediccion> getHistoryForUser(Long userId) {
         return prediccionRepository.findByUsuarioIdOrderByFechaCreacionDesc(userId);
     }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 }
