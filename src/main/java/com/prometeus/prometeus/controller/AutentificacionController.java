@@ -1,4 +1,4 @@
-package com.prometeus.prometeus.controlador;
+package com.prometeus.prometeus.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AutentificacionController {
     private final UsuarioService usuarioService;
 
-    @GetMapping("/login")
-    public String getLogin(Model modal) {
-        modal.addAttribute("loginDTO", new LoginDTO());
+    @GetMapping("/")
+    public String getLogin() {
         return "login";
     }
 
@@ -34,12 +33,13 @@ public class AutentificacionController {
         log.info("DTO : {}", loginDTO);
 
         if (!usuarioService.validarCredenciales(loginDTO.getUsername(), loginDTO.getClave())) {
-            redirectAttrs.addFlashAttribute("error", "Usuario no encontrado");
-            return "redirect:login";
+            model.addAttribute("error", "Usuario no encontrado");
+            return "login";
         }
+
         Usuario usuario = usuarioService.findByUsername(loginDTO.getUsername()).get();
         sesion.setAttribute("user", usuario);
-        log.info("Usuario Guardado : {}", usuario);
+
         return "redirect:/predict";
     }
 }

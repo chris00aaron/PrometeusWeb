@@ -10,6 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PrediccionRequest {
     private BigDecimal ambiente;
+<<<<<<< Updated upstream
+=======
+
+    @NotNull(message = "El campo 'coolant' no puede ser nulo")
+    @Digits(integer=3, fraction=2, message = "El campo 'coolant' debe tener máximo 3 enteros y 2 decimales")
+    @Positive(message = "El campo 'coolant' debe ser un número positivo")
+>>>>>>> Stashed changes
     private BigDecimal coolant;
     private BigDecimal u_d;
     private BigDecimal u_q;
