@@ -34,7 +34,7 @@ public class PrediccionService {
         // 1. LLAMAR A LA API DE PYTHON (Simulación)
         // Aquí iría tu lógica con RestTemplate o WebClient
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity("https://b4aef5d54b69.ngrok-free.app/predecir/", dto, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity("https://4d089a912bec.ngrok-free.app/predecir/", dto, String.class);
         JSONObject json = new JSONObject(response.getBody());
         BigDecimal temperaturaPredicha = json
             .getJSONObject("temperatura_predicha")
