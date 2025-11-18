@@ -4,8 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.prometeus.prometeus.dto.LoginDTO;
 import com.prometeus.prometeus.model.Usuario;
+import com.prometeus.prometeus.model.dto.LoginDTO;
 import com.prometeus.prometeus.service.UsuarioService;
 
 import jakarta.servlet.http.HttpSession;

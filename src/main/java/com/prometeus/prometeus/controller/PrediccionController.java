@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.prometeus.prometeus.dto.PrediccionRequest;
 import com.prometeus.prometeus.model.Prediccion;
 import com.prometeus.prometeus.model.Usuario;
+import com.prometeus.prometeus.model.dto.PrediccionRequest;
 import com.prometeus.prometeus.service.PrediccionService;
 
 import jakarta.servlet.http.HttpSession;

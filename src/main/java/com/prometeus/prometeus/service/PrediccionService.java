@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.prometeus.prometeus.dto.PrediccionRequest;
 import com.prometeus.prometeus.model.Prediccion;
 import com.prometeus.prometeus.model.Usuario;
+import com.prometeus.prometeus.model.dto.PrediccionRequest;
 import com.prometeus.prometeus.repository.PrediccionRepository;
 import com.prometeus.prometeus.repository.UsuarioRepository;
 
