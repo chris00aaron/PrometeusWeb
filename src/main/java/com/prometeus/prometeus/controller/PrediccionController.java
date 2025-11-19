@@ -53,13 +53,20 @@ public class PrediccionController {
             return "redirect:/predict"; // Volver al formulario con errores
         }
 
-        // 2. Llama al servicio, que ahora hace todo (API + Guardar)
-        BigDecimal result = prediccionService.getPredictionAndSave(predictionRequest, userId);
+        try {
 
-        // 3. Devuelve los datos a la vista
-        model.addAttribute("predictionRequest", predictionRequest); // Mantiene los datos en el formulario
-        model.addAttribute("predictionResult", result); // Muestra el resultado
+            // 2. Llama al servicio, que ahora hace todo (API + Guardar)
+            BigDecimal result = prediccionService.getPredictionAndSave(predictionRequest, userId);
+            // 3. Devuelve los datos a la vista
+            model.addAttribute("predictionRequest", predictionRequest); // Mantiene los datos en el formulario
+            model.addAttribute("predictionResult", result); // Muestra el resultado
 
+        } catch (RuntimeException e) {
+            // Manejo de errores
+            model.addAttribute("erroresValidacion", List.of("Error al obtener la predicción: " + e.getMessage()));
+            model.addAttribute("predictionResult", null);
+            model.addAttribute("predictionRequest", predictionRequest);
+        } 
         return "prediction-engine";
     }
 

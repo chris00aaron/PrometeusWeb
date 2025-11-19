@@ -17,9 +17,10 @@ import com.prometeus.prometeus.repository.PrediccionRepository;
 import com.prometeus.prometeus.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j; // <--- IMPORTANTE: Agregar este import
 
 @RequiredArgsConstructor
-
+@Slf4j // <--- IMPORTANTE: Agregar esta anotación para los logs
 @Service
 public class PrediccionService {
     private final PrediccionRepository prediccionRepository;
@@ -35,46 +36,63 @@ public class PrediccionService {
      * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el resultado.
      */
     public BigDecimal getPredictionAndSave(PrediccionRequest dto, Long userId) {
-
-        // 1. LLAMAR A LA API DE PYTHON (Simulación)
-        // Aquí iría tu lógica con RestTemplate o WebClient
-        RestTemplate restTemplate = new RestTemplate();
-        String urlCompleto = baseUrl+predictionPath;
-        ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
         
-        JSONObject json = new JSONObject(response.getBody());
-        BigDecimal temperaturaPredicha = json
-            .getJSONObject("temperatura_predicha")
-            .getBigDecimal("_Output__stator_winding");
+        // INICIO DEL BLOQUE TRY (T025)
+        try {
+            log.info("Iniciando proceso de predicción para usuario ID: {}", userId);
 
-        temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
-        
-        // 2. BUSCAR UN USUARIO (Para pruebas)
-        // Como no tienes login, buscamos un usuario fijo (ej: ID 1).
-        // ¡ASEGÚRATE DE QUE ESTE USUARIO EXISTA EN TU BD PARA PROBAR! (Ver paso 5)
-        Usuario usuarioPrueba = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario de prueba ID 1 no encontrado."));
+            // 1. LLAMAR A LA API DE PYTHON (Simulación)
+            RestTemplate restTemplate = new RestTemplate();
+            String urlCompleto = baseUrl + predictionPath;
+            
+            // Esta línea puede fallar si la API externa está caída
+            ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
+            
+            // Validamos que el código sea 200 OK y que el cuerpo no venga vacío
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                throw new RuntimeException("Error en la respuesta de la API de predicción. Status: " + response.getStatusCode());
+            }
 
-        // 3. CONSTRUIR LA ENTIDAD PREDICCION
-        Prediccion nuevaPrediccion = Prediccion.builder()
-                .ambiente(dto.getAmbiente())
-                .refrigeracion(dto.getCoolant())
-                .voltajeD(dto.getU_d())
-                .voltajeQ(dto.getU_q())
-                .velocidad(dto.getMotor_speed())
-                .torque(dto.getTorque())
-                .corrienteD(dto.getI_d())
-                .corrienteQ(dto.getI_q())
-                .temperatura(temperaturaPredicha) // El resultado de la API
-                .usuario(usuarioPrueba)           // El usuario de prueba
-                // 'uuid' y 'fechaCreacion' se manejan automáticamente
-                .build();
+            JSONObject json = new JSONObject(response.getBody());
+            BigDecimal temperaturaPredicha = json
+                .getJSONObject("temperatura_predicha")
+                .getBigDecimal("_Output__stator_winding");
 
-        // 4. GUARDAR EN LA BASE DE DATOS
-        prediccionRepository.save(nuevaPrediccion);
+            temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
+            
+            // 2. BUSCAR UN USUARIO
+            Usuario usuarioPrueba = usuarioRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + userId));
 
-        // 5. DEVOLVER EL RESULTADO
-        return temperaturaPredicha;
+            // 3. CONSTRUIR LA ENTIDAD PREDICCION
+            Prediccion nuevaPrediccion = Prediccion.builder()
+                    .ambiente(dto.getAmbiente())
+                    .refrigeracion(dto.getCoolant())
+                    .voltajeD(dto.getU_d())
+                    .voltajeQ(dto.getU_q())
+                    .velocidad(dto.getMotor_speed())
+                    .torque(dto.getTorque())
+                    .corrienteD(dto.getI_d())
+                    .corrienteQ(dto.getI_q())
+                    .temperatura(temperaturaPredicha)
+                    .usuario(usuarioPrueba)
+                    .build();
+
+            // 4. GUARDAR EN LA BASE DE DATOS
+            prediccionRepository.save(nuevaPrediccion);
+
+            log.info("Predicción realizada y guardada exitosamente. Temperatura: {}", temperaturaPredicha);
+            
+            // 5. DEVOLVER EL RESULTADO
+            return temperaturaPredicha;
+
+        } catch (Exception e) {
+            // CAPTURA DE ERRORES (T025 y T028)
+            log.error("Error crítico al procesar la predicción: {}", e.getMessage(), e);
+            
+            // Relanzamos una excepción genérica para que el Controller sepa que falló
+            throw new RuntimeException("Error interno al procesar la predicción: " + e.getMessage());
+        }
     }
 
     public List<Prediccion> getHistoryForUser(Long userId) {
