@@ -1,4 +1,4 @@
-package com.prometeus.prometeus.model.dto;
+package com.prometeus.prometeus.dto;
 
 import java.math.BigDecimal;
 

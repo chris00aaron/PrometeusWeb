@@ -1,4 +1,4 @@
-package com.prometeus.prometeus.model.dto;
+package com.prometeus.prometeus.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
