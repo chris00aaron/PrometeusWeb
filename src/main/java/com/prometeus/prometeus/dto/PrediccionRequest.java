@@ -38,12 +38,6 @@ public class PrediccionRequest {
     @Positive(message = "La velocidad del motor debe ser un número positivo")
     private Integer motor_speed;
     
-    @NotNull(message = "El campo 'torque' no puede ser nulo")
-    @Digits(integer=5, fraction=2, message = "El campo 'torque' debe tener máximo 5 enteros y 2 decimales")
-    @DecimalMin(value = "-1000.0", message = "El torque no puede ser menor a {value}")
-    @DecimalMax(value = "1000.0", message = "El torque no puede ser mayor a {value}")
-    private BigDecimal torque;
-    
     @NotNull(message = "El campo 'i_d' no puede ser nulo")
     @Digits(integer=4, fraction=3, message = "El campo 'i_d' debe tener máximo 4 enteros y 3 decimales")
     private BigDecimal i_d;

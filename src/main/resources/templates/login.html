@@ -7,6 +7,7 @@
     <title>Prometeus - Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -164,12 +165,7 @@
         }
     </style>
 </head>
-
 <body>
-    <div th:if="${error != null and error != ''}" 
-        id="container-mensaje-error"  th:data-error-message="${error}">
-    </div>
-    
     <div class="login-container">
         <div class="logo">
             <i class="fas fa-cogs"></i>
@@ -181,18 +177,19 @@
             <h5>Bienvenido</h5>
         </div>
 
-        <form id="loginForm" th:action="@{/usuario/login}" th:object="${loginDTO}" method="post">
+        <form id="loginForm" th:action="@{/login}" method="post">
+
             <div class="mb-3">
                 <label for="username" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="username" placeholder="admin" th:field="*{username}"
-                    required>
+                <input type="text" class="form-control" name="username" required>
             </div>
+
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" placeholder="admin123" th:field="*{clave}"
-                    required>
+                <input type="password" class="form-control" name="password" required>
             </div>
-            <button type="submit" class="btn btn-login" id="loginBtn">Iniciar Sesión</button>
+
+            <button type="submit" class="btn btn-login">Iniciar Sesión</button>
         </form>
 
         <div class="demo-credentials">
@@ -200,19 +197,18 @@
             <p><strong>Admin:</strong> admin / 123</p>
             <p><strong>Usuario:</strong> user / 123</p>
         </div>
+    
+    </div>
+        <div th:if="${param.error}">
+        <div class="alert alert-danger">
+            Usuario o contraseña incorrectos.
+        </div>
     </div>
 
-    <div class="footer">
-        <p>Professional Electric Motor Design & Manufacturing</p>
+    <div th:if="${param.logout}">
+        <div class="alert alert-success">
+            Sesión cerrada correctamente.
+        </div>
     </div>
-
-    <script th:src="@{/js/mensaje-error-flotante.js}" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const containerErrorExiste = document.getElementById('container-mensaje-error') !== null;
-            if (containerErrorExiste) mostrarErrorFlotante('container-mensaje-error');
-        });
-    </script>
 </body>
 </html>

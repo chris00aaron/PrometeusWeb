@@ -1,0 +1,180 @@
+/* --- ESTILOS GENERALES --- */
+body {
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Contenedor principal centrado */
+.center-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Título de la página encima de la tarjeta */
+.page-title {
+  text-align: center;
+  color: #1a1464;
+  font-weight: 700;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+}
+
+/* --- TARJETA --- */
+.card {
+  border: none;
+  border-radius: 16px; /* Bordes un poco más redondeados para vista solitaria */
+  box-shadow: 0 10px 30px rgba(26, 20, 100, 0.1); /* Sombra más elegante */
+  background-color: white;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 25px;
+  font-weight: 600;
+  color: #1a1464;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+
+/* --- ZONA DE CARGA (DRAG & DROP) --- */
+.upload-area {
+  border: 2px dashed #e0e0e0;
+  background-color: #fef5f5; /* Tu color de fondo de inputs */
+  border-radius: 12px;
+  padding: 50px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+  border-color: #ff6b35;
+  background-color: rgba(255, 107, 53, 0.05);
+  transform: scale(1.01);
+}
+
+.upload-icon {
+  font-size: 3.5rem;
+  color: #ff6b35;
+  margin-bottom: 15px;
+}
+
+.upload-text {
+  color: #1a1464;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.upload-subtext {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* Input file oculto */
+#fileInput {
+  display: none;
+}
+
+/* --- ADVERTENCIA --- */
+.alert-limit {
+  background-color: rgba(255, 107, 53, 0.06);
+  border: 1px dashed rgba(255, 107, 53, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  margin-top: 25px;
+}
+
+.alert-limit i {
+  color: #ff6b35;
+  font-size: 1.3rem;
+  margin-right: 15px;
+  margin-top: 2px;
+}
+
+.alert-content h6 {
+  color: #1a1464;
+  margin: 0 0 5px 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.alert-content p {
+  margin: 0;
+  color: #666;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* --- BOTÓN --- */
+.btn-predict {
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  padding: 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  margin-top: 25px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(255, 107, 53, 0.2);
+}
+
+.btn-predict:hover {
+  background-color: #e55a2b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+  color: white;
+}
+
+/* --- ARCHIVO SELECCIONADO --- */
+.file-selected {
+  display: none;
+  margin-top: 25px;
+  padding: 15px 20px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+
+.file-icon {
+  color: #28a745;
+  margin-right: 12px;
+  font-size: 1.4rem;
+}
+
+.remove-file {
+  color: #ff6b35;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.remove-file:hover {
+  background-color: #fff0eb;
+}

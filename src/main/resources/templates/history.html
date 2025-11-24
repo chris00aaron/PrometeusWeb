@@ -3,225 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction History - DoperPillar</title>
+    <title>Historial de Predicciones</title>
+
+    <!-- Bootstrap + Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
+        :root {
+            --brand-primary: #1a1464;
+            --brand-accent: #ff6b35;
+            --surface: #ffffff;
+            --border-light: #e5e5e5;
+            --row-hover: #fff5ef;
+            --header-bg: #f7f8fc;
+            --text-main: #333;
+            --text-muted: #777;
+        }
+
         body {
-            background-color: #f5f5f5;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f1f2f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 30px;
         }
-        .sidebar {
-            background-color: #1a1464;
-            min-height: 100vh;
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 20px 0;
+
+        .content-container {
+            max-width: 1150px;
+            margin: auto;
         }
-        .sidebar .logo {
-            display: flex;
-            align-items: center;
-            padding: 0 20px 30px;
-            color: white;
+
+        /* ENCABEZADO */
+        .page-header h2 {
+            color: var(--brand-primary);
+            font-weight: 700;
         }
-        .sidebar .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-            background-color: #ff6b35;
+
+        .btn-action {
             border-radius: 8px;
-            padding: 8px;
-        }
-        .sidebar .logo-text h5 {
-            margin: 0;
+            border: 2px solid var(--brand-primary);
+            padding: 10px 16px;
+            color: var(--brand-primary);
             font-weight: 600;
         }
-        .sidebar .logo-text small {
-            color: #888;
-            font-size: 0.75rem;
-        }
-        .nav-item {
-            margin: 5px 15px;
-        }
-        .nav-link {
-            color: #ddd;
-            padding: 12px 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-        }
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+
+        .btn-action:hover {
+            background-color: var(--brand-primary);
             color: white;
         }
-        .nav-link.active {
-            background-color: #ff6b35;
-            color: white;
+
+        /* ACORDEÓN (FILTROS) */
+        .accordion-button {
+            background-color: var(--surface);
+            font-weight: 600;
+            color: var(--brand-primary);
         }
-        .main-content {
-            margin-left: 250px;
-            padding: 20px 40px;
+
+        .accordion-button:not(.collapsed) {
+            background-color: #edeffe;
+            color: var(--brand-primary);
         }
-        .top-bar {
-            background-color: #0a0a0a;
-            color: white;
-            padding: 10px 40px;
-            margin-left: 250px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .accordion-body {
+            background-color: var(--surface);
+            border-radius: 0 0 10px 10px;
         }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* CARD */
         .card {
             border: none;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background-color: var(--surface);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
+
         .card-header {
-            background-color: white;
-            border-bottom: 1px solid #e0e0e0;
-            padding: 20px;
-            border-radius: 12px 12px 0 0 !important;
+            border-bottom: 1px solid var(--border-light);
+            background-color: var(--surface);
+            border-radius: 12px 12px 0 0;
+            padding: 18px 24px;
         }
-        .form-label {
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--brand-primary);
         }
-        .form-control, .form-select {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 10px 15px;
-            background-color: #fef5f5;
+
+        /* TABLA PREMIUM */
+        .table-premium {
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
-        .form-control:focus, .form-select:focus {
-            border-color: #ff6b35;
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.15);
-        }
-        .input-group-text {
-            background-color: transparent;
-            border: 1px solid #e0e0e0;
-            border-left: none;
-            color: #666;
-        }
-        .btn-predict {
-            background-color: #ff6b35;
-            color: white;
+
+        .table-premium thead th {
+            background-color: var(--header-bg);
             border: none;
             padding: 14px;
-            border-radius: 8px;
             font-weight: 600;
-            width: 100%;
-            margin-top: 20px;
-            transition: all 0.3s;
+            color: var(--text-main);
         }
-        .btn-predict:hover {
-            background-color: #e55a2b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+
+        .table-premium tbody tr {
+            background-color: var(--surface);
+            border-radius: 10px;
+            transition: 0.2s;
         }
-        .prediction-area {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
+
+        .table-premium tbody tr:hover {
+            background-color: var(--row-hover);
+            cursor: pointer;
         }
-        .prediction-area i {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #ddd;
-        }
-        .logout-btn {
-            background-color: rgba(255, 107, 53, 0.2);
-            color: #ff6b35;
+
+        .table-premium tbody td {
+            padding: 16px;
+            color: var(--text-main);
             border: none;
-            padding: 8px 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .text-danger {
+            color: var(--brand-accent) !important;
+            font-weight: 600;
+        }
+
+        /* PAGINACIÓN */
+        .pagination .page-link {
+            color: var(--brand-primary);
             border-radius: 8px;
-            margin-top: auto;
-            margin-bottom: 20px;
-            margin-left: 15px;
-            margin-right: 15px;
+            padding: 8px 14px;
         }
-        .logout-btn:hover {
-            background-color: rgba(255, 107, 53, 0.3);
+
+        .pagination .active .page-link {
+            background-color: var(--brand-accent);
+            border-color: var(--brand-accent);
+            color: white;
         }
-        .sidebar-bottom {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
-        .prediction-result-area { text-align: center; padding: 40px 20px; }
-        .prediction-result-value { font-size: 3.5rem; font-weight: 700; color: #1a1464; margin-bottom: 10px; }
-        .prediction-result-label { font-size: 1.2rem; color: #ff6b35; font-weight: 500; }
-        .prediction-placeholder { text-align: center; padding: 60px 20px; color: #999; }
-        .prediction-placeholder i { font-size: 3rem; margin-bottom: 20px; color: #ddd; }
+
     </style>
 </head>
+
 <body>
-    
-    <div class="main-content">
-        
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="mb-2">Prediction History</h2>
-                <p class="text-muted mb-4">Showing all predictions for Test User</p>
-            </div>
-            <div>
-                <a th:href="@{/predict}" class="btn btn-outline-primary">
-                    <i class="fas fa-plus me-2"></i>
-                    New Prediction
-                </a>
-            </div>
+
+<div class="content-container">
+
+    <!-- Top Header -->
+    <div class="d-flex justify-content-between align-items-center page-header mb-4">
+        <div>
+            <h2>Historial de Predicciones</h2>
+            <p class="text-muted">Registros generados por el usuario</p>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">History Log</h5>
-            </div>
-            <div class="card-body p-0">
-                
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Date / Time</th>
-                                <th>Ambient (°C)</th>
-                                <th>Torque (N·m)</th>
-                                <th>Motor Speed (RPM)</th>
-                                <th>Predicted Temp (°C)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="p : ${predictions}">
-                                <td th:text="${#temporals.format(p.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></td>
-                                <td th:text="${p.ambiente}"></td>
-                                <td th:text="${p.torque}"></td>
-                                <td th:text="${p.velocidad}"></td>
-                                <td>
-                                    <strong class="text-danger" th:text="${p.temperatura}"></strong>
-                                </td>
-                            </tr>
+        <a th:href="@{/predict}" class="btn btn-action">
+            <i class="fa fa-plus"></i> Nueva Predicción
+        </a>
+    </div>
 
-                            <tr th:if="${predictions.isEmpty()}">
-                                <td colspan="5" class="text-center text-muted p-4">
-                                    No predictions found.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+    <!-- FILTRO EN ACORDEÓN -->
+    <div class="accordion mb-4" id="filtersAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFilter">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFilter" aria-expanded="false">
+                    <i class="fa fa-filter me-2"></i> Filtros de fecha
+                </button>
+            </h2>
+
+            <div id="collapseFilter" class="accordion-collapse collapse" aria-labelledby="headingFilter">
+                <div class="accordion-body">
+
+                    <form method="get" th:action="@{/history}">
+                        <div class="row g-4">
+
+                            <div class="col-md-4">
+                                <label class="filter-label">Fecha Inicio</label>
+                                <input type="date" name="startDate" class="form-control"
+                                       th:value="${startDate}">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="filter-label">Fecha Fin</label>
+                                <input type="date" name="endDate" class="form-control"
+                                       th:value="${endDate}">
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="fa fa-search"></i> Aplicar
+                                </button>
+
+                                <a th:href="@{/history}" class="btn btn-secondary">
+                                    <i class="fa fa-undo"></i> Limpiar
+                                </a>
+                            </div>
+
+                        </div>
+                    </form>
+
                 </div>
-
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <!-- TABLA -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Registro Histórico</h5>
+        </div>
+
+        <div class="card-body p-3">
+
+            <div class="table-responsive">
+                <table class="table table-premium w-100">
+                    <thead>
+                        <tr>
+                            <th>Fecha y Hora</th>
+                            <th>Ambiente</th>
+                            <th>Refrigeracion</th>
+                            <th>uD</th>
+                            <th>uQ</th>
+                            <th>iD</th>
+                            <th>iQ</th>                            
+                            <th>Velocidad</th>
+                            <th>Temperatura</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="p : ${predictionsPage.content}">
+                            <td th:text="${#temporals.format(p.fechaCreacion,'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${p.ambiente}"></td>
+                            <td th:text="${p.refrigeracion}"></td>
+                            <td th:text="${p.voltajeD}"></td>
+                            <td th:text="${p.voltajeQ}"></td>
+                            <td th:text="${p.velocidad}"></td>
+                            <td th:text="${p.corrienteD}"></td>
+                            <td th:text="${p.corrienteQ}"></td>
+                            <td class="text-danger" th:text="${p.temperatura}"></td>
+                        </tr>
+
+                        <tr th:if="${predictionsPage.totalElements == 0}">
+                            <td colspan="5" class="text-center text-muted py-4">
+                                No hay registros disponibles.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINACIÓN -->
+            <nav th:if="${predictionsPage.totalPages > 1}" class="mt-3">
+                <ul class="pagination justify-content-center">
+
+                    <li class="page-item" th:classappend="${predictionsPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/history?page=${currentPage - 1}|}">
+                            <i class="fa fa-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, predictionsPage.totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:text="${i + 1}"
+                           th:href="@{|/history?page=${i}|}"></a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${predictionsPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/history?page=${currentPage + 1}|}">
+                            <i class="fa fa-chevron-right"></i>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

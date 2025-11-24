@@ -22,14 +22,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
 
 @EqualsAndHashCode
-@ToString
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +44,7 @@ public class Usuario {
     @Column(nullable = false, length = 40, unique = true)
     private String username;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 120)
     private String clave;
 
     @Enumerated(EnumType.STRING)

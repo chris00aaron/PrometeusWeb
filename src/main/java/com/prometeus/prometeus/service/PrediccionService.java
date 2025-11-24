@@ -2,10 +2,15 @@ package com.prometeus.prometeus.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -50,8 +55,6 @@ public class PrediccionService {
         temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
         
         // 2. BUSCAR UN USUARIO (Para pruebas)
-        // Como no tienes login, buscamos un usuario fijo (ej: ID 1).
-        // ¡ASEGÚRATE DE QUE ESTE USUARIO EXISTA EN TU BD PARA PROBAR! (Ver paso 5)
         Usuario usuarioPrueba = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario de prueba ID 1 no encontrado."));
 
@@ -62,12 +65,10 @@ public class PrediccionService {
                 .voltajeD(dto.getU_d())
                 .voltajeQ(dto.getU_q())
                 .velocidad(dto.getMotor_speed())
-                .torque(dto.getTorque())
                 .corrienteD(dto.getI_d())
                 .corrienteQ(dto.getI_q())
                 .temperatura(temperaturaPredicha) // El resultado de la API
                 .usuario(usuarioPrueba)           // El usuario de prueba
-                // 'uuid' y 'fechaCreacion' se manejan automáticamente
                 .build();
 
         // 4. GUARDAR EN LA BASE DE DATOS
@@ -79,5 +80,21 @@ public class PrediccionService {
 
     public List<Prediccion> getHistoryForUser(Long userId) {
         return prediccionRepository.findByUsuarioIdOrderByFechaCreacionDesc(userId);
+    }
+
+    public Page<Prediccion> getHistoryFiltered(Long userId, int page, LocalDate start, LocalDate end) {
+
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("fechaCreacion").descending());
+
+        if (start != null && end != null) {
+            return prediccionRepository.findByUsuarioIdAndFechaCreacionBetween(
+                    userId,
+                    start.atStartOfDay(),
+                    end.atTime(23, 59),
+                    pageable
+            );
+        }
+
+        return prediccionRepository.findByUsuarioId(userId, pageable);
     }
 }

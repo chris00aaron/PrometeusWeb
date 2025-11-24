@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Datos CSV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body {
+            background-color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Contenedor principal centrado */
+        .center-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Título de la página encima de la tarjeta */
+        .page-title {
+            text-align: center;
+            color: #1a1464;
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        /* --- TARJETA --- */
+        .card {
+            border: none;
+            border-radius: 16px; /* Bordes un poco más redondeados para vista solitaria */
+            box-shadow: 0 10px 30px rgba(26, 20, 100, 0.1); /* Sombra más elegante */
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 25px;
+            font-weight: 600;
+            color: #1a1464;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- ZONA DE CARGA (DRAG & DROP) --- */
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            background-color: #fef5f5; /* Tu color de fondo de inputs */
+            border-radius: 12px;
+            padding: 50px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: #ff6b35;
+            background-color: rgba(255, 107, 53, 0.05);
+            transform: scale(1.01);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: #ff6b35;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            color: #1a1464;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .upload-subtext {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Input file oculto */
+        #fileInput {
+            display: none;
+        }
+
+        /* --- ADVERTENCIA --- */
+        .alert-limit {
+            background-color: rgba(255, 107, 53, 0.06);
+            border: 1px dashed rgba(255, 107, 53, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            margin-top: 25px;
+        }
+
+        .alert-limit i {
+            color: #ff6b35;
+            font-size: 1.3rem;
+            margin-right: 15px;
+            margin-top: 2px;
+        }
+
+        .alert-content h6 {
+            color: #1a1464;
+            margin: 0 0 5px 0;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .alert-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* --- BOTÓN --- */
+        .btn-predict {
+            background-color: #ff6b35;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 25px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(255, 107, 53, 0.2);
+        }
+
+        .btn-predict:hover {
+            background-color: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 53, 0.3);
+            color: white;
+        }
+
+        /* --- ARCHIVO SELECCIONADO --- */
+        .file-selected {
+            display: none;
+            margin-top: 25px;
+            padding: 15px 20px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+
+        .file-icon {
+            color: #28a745;
+            margin-right: 12px;
+            font-size: 1.4rem;
+        }
+
+        .remove-file {
+            color: #ff6b35;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .remove-file:hover {
+            background-color: #fff0eb;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="center-container">
+        
+        <h1 class="page-title">Importación de Datos</h1>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-database me-2" style="color:#ff6b35;"></i>
+                    Cargar Archivo CSV
+                </div>
+                <div class="card-body p-4 p-md-5"> 
+                    <form id="uploadForm" th:action="@{/predecir-multiple}" method="post" enctype="multipart/form-data">
+                        
+                        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <div class="upload-text">Arrastra tu archivo aquí</div>
+                            <p class="upload-subtext">o haz clic para buscar en tu ordenador</p>
+                            <input type="file" id="fileInput" name="archivo" accept=".csv">
+                        </div>
+
+                        <div class="file-selected" id="fileSelectedBox">
+                            <div class="file-info">
+                                <i class="fas fa-file-csv file-icon"></i>
+                                <div>
+                                    <div id="fileName" style="font-weight:600; color:#1a1464;">datos.csv</div>
+                                    <small class="text-muted" id="fileSize">0 MB</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-trash-alt remove-file" onclick="removeFile(event)" title="Eliminar archivo"></i>
+                        </div>
+
+                        <div class="alert-limit">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="alert-content">
+                                <h6>Restricción de tamaño</h6>
+                                <p>Para garantizar un rendimiento óptimo, el archivo CSV <strong>no debe superar los 200 MB</strong>.</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-predict">
+                            Procesar Datos <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileSelectedBox = document.getElementById('fileSelectedBox');
+        const fileNameDisplay = document.getElementById('fileName');
+        const fileSizeDisplay = document.getElementById('fileSize');
+
+        // Eventos Drag & Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('dragover');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                
+                // Validación visual de extensión
+                if (!file.name.toLowerCase().endsWith('.csv')) {
+                    alert('Por favor sube un archivo con extensión .csv');
+                    return;
+                }
+
+                // Mostrar interfaz de archivo seleccionado
+                dropZone.style.display = 'none';
+                fileSelectedBox.style.display = 'flex';
+                fileNameDisplay.textContent = file.name;
+                
+                // Calcular tamaño
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileSizeDisplay.textContent = `${sizeMB} MB`;
+
+                // Validación lógica visual de tamaño
+                if (sizeMB > 200) {
+                    fileSizeDisplay.style.color = 'red';
+                    fileSizeDisplay.innerHTML += ' <span style="color:red; font-weight:bold">(Excede límite)</span>';
+                    alert('El archivo supera los 200 MB permitidos.');
+                } else {
+                    fileSizeDisplay.style.color = '#6c757d';
+                }
+            }
+        }
+
+        function removeFile(e) {
+            e.stopPropagation();
+            fileInput.value = '';
+            fileSelectedBox.style.display = 'none';
+            dropZone.style.display = 'block';
+        }
+        
+    </script>
+</body>
+</html>
