@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Registrar Usuario', ~{::extraStyles})}">
+    <th:block th:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/crear-usuario.css}" />
+    </th:block>
+</head>
+
+<body th:replace="~{layout :: layout('Registrar Usuario', ~{::content}, null)}">
+
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-2">Registrar Nuevo Usuario</h2>
+                <p class="text-muted mb-0">
+                    Complete el formulario para crear un nuevo usuario en el sistema.
+                </p>
+            </div>
+        </div>
+
+        <!-- Mensaje de éxito -->
+        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${mensaje}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- Formulario de creación -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Datos del Usuario
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+                <form th:action="@{/admin/usuarios}" th:object="${usuarioRequest}" method="post">
+
+                    <!-- Errores de validación (debe estar dentro del form) -->
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-4" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Se encontraron los siguientes errores:
+                        </h5>
+                        <ul class="mb-0">
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                        </ul>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Username -->
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-1"></i>
+                                Nombre de Usuario
+                            </label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}"
+                                placeholder="Ej: jdoe" required
+                                th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}"
+                                th:errors="*{username}">
+                                Error en username
+                            </div>
+                            <small class="form-text text-muted">
+                                Debe ser único en el sistema
+                            </small>
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="col-md-6">
+                            <label for="rol" class="form-label">
+                                <i class="fas fa-user-tag me-1"></i>
+                                Rol
+                            </label>
+                            <select class="form-select" id="rol" th:field="*{rol}" required
+                                th:classappend="${#fields.hasErrors('rol')} ? 'is-invalid' : ''">
+                                <option value="">Seleccione un rol</option>
+                                <option th:each="rol : ${roles}" th:value="${rol}" th:text="${rol}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('rol')}" th:errors="*{rol}">
+                                Error en rol
+                            </div>
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div class="col-md-6">
+                            <label for="clave" class="form-label">
+                                <i class="fas fa-lock me-1"></i>
+                                Contraseña
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="clave" th:field="*{clave}"
+                                    placeholder="Ingrese contraseña segura" required minlength="6"
+                                    th:classappend="${#fields.hasErrors('clave')} ? 'is-invalid' : ''">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </button>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('clave')}"
+                                    th:errors="*{clave}">
+                                    Error en contraseña
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Mínimo 6 caracteres. Se guardará encriptada.
+                            </small>
+                        </div>
+
+                        <!-- Confirmar contraseña (validación del lado del cliente) -->
+                        <div class="col-md-6">
+                            <label for="confirmarClave" class="form-label">
+                                <i class="fas fa-lock me-1"></i>
+                                Confirmar Contraseña
+                            </label>
+                            <input type="password" class="form-control" id="confirmarClave"
+                                placeholder="Repita la contraseña" required minlength="6">
+                            <small class="form-text text-muted">
+                                Debe coincidir con la contraseña ingresada
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save me-2"></i>
+                            Crear Usuario
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary">
+                            <i class="fas fa-redo me-2"></i>
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Información Importante
+                </h6>
+                <ul class="mb-0">
+                    <li>La contraseña se almacenará de forma segura usando encriptación BCrypt.</li>
+                    <li>El usuario creado podrá iniciar sesión inmediatamente con las credenciales proporcionadas.</li>
+                    <li>Esta acción quedará registrada en el sistema de auditoría.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para confirmar contraseña -->
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const password = document.getElementById('clave');
+            const confirmPassword = document.getElementById('confirmarClave');
+            const submitBtn = document.getElementById('submitBtn');
+            const togglePassword = document.getElementById('togglePassword');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            // Alternar visibilidad de contraseña
+            togglePassword.addEventListener('click', function () {
+                const type = password.type === 'password' ? 'text' : 'password';
+                password.type = type;
+                confirmPassword.type = type;
+
+                if (type === 'text') {
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                } else {
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            });
+
+            // Validar coincidencia de contraseñas
+            function validatePasswords() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                    confirmPassword.classList.add('is-invalid');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.classList.remove('is-invalid');
+                }
+            }
+
+            password.addEventListener('change', validatePasswords);
+            confirmPassword.addEventListener('keyup', validatePasswords);
+
+            // Prevenir envío si las contraseñas no coinciden
+            form.addEventListener('submit', function (e) {
+                if (password.value !== confirmPassword.value) {
+                    e.preventDefault();
+                    confirmPassword.classList.add('is-invalid');
+                    alert('Las contraseñas no coinciden. Por favor, verifica.');
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

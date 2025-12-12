@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class PrediccionService {
     private final PrediccionRepository prediccionRepository;
     private final UsuarioRepository usuarioRepository;
+    private final AuditoriaService auditoriaService;
 
     @Value("${service.prediction.base-url}")
     private String baseUrl;
@@ -37,23 +38,24 @@ public class PrediccionService {
     private String predictionPath;
 
     /**
-     * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el resultado.
+     * Procesa los datos del DTO, llama a la API, guarda la predicción y devuelve el
+     * resultado.
      */
     public BigDecimal getPredictionAndSave(PrediccionRequest dto, Long userId) {
 
         // 1. LLAMAR A LA API DE PYTHON (Simulación)
         // Aquí iría tu lógica con RestTemplate o WebClient
         RestTemplate restTemplate = new RestTemplate();
-        String urlCompleto = baseUrl+predictionPath;
+        String urlCompleto = baseUrl + predictionPath;
         ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
-        
+
         JSONObject json = new JSONObject(response.getBody());
         BigDecimal temperaturaPredicha = json
-            .getJSONObject("temperatura_predicha")
-            .getBigDecimal("_Output__stator_winding");
+                .getJSONObject("temperatura_predicha")
+                .getBigDecimal("_Output__stator_winding");
 
         temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
-        
+
         // 2. BUSCAR UN USUARIO (Para pruebas)
         Usuario usuarioPrueba = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario de prueba ID 1 no encontrado."));
@@ -68,11 +70,13 @@ public class PrediccionService {
                 .corrienteD(dto.getI_d())
                 .corrienteQ(dto.getI_q())
                 .temperatura(temperaturaPredicha) // El resultado de la API
-                .usuario(usuarioPrueba)           // El usuario de prueba
+                .usuario(usuarioPrueba) // El usuario de prueba
                 .build();
 
         // 4. GUARDAR EN LA BASE DE DATOS
         prediccionRepository.save(nuevaPrediccion);
+        // AUDITAR
+        auditoriaService.registrarPrediccion(usuarioPrueba, dto, temperaturaPredicha);
 
         // 5. DEVOLVER EL RESULTADO
         return temperaturaPredicha;
@@ -91,8 +95,7 @@ public class PrediccionService {
                     userId,
                     start.atStartOfDay(),
                     end.atTime(23, 59),
-                    pageable
-            );
+                    pageable);
         }
 
         return prediccionRepository.findByUsuarioId(userId, pageable);
