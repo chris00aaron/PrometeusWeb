@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.prometeus.prometeus.model.Usuario;
 import com.prometeus.prometeus.repository.UsuarioRepository;
+import com.prometeus.prometeus.service.AuditoriaService;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,18 +19,21 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class UsuarioDetailsService implements UserDetailsService {
-    
+
     private final UsuarioRepository usuarioRepository;
+    private final AuditoriaService auditoriaService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-        
+
         usuario.setUltimaConexion(LocalDateTime.now());
         usuarioRepository.save(usuario);
-        
-        UsuarioDetallesSecurity us = new UsuarioDetallesSecurity(usuario);       
+
+        auditoriaService.registrarInicioSesion(usuario);
+
+        UsuarioDetallesSecurity us = new UsuarioDetallesSecurity(usuario);
         return us;
     }
 }
