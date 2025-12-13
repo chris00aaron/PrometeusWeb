@@ -1,0 +1,385 @@
+/* ===========================================
+   ESTILOS UNIFICADOS PARA VISTAS DE AUDITORÍA
+   Colores principales:
+   - Brand Primary: #1a1464 (azul oscuro)
+   - Brand Accent: #ff6b35 (naranja)
+   =========================================== */
+
+:root {
+    --brand-primary: #1a1464;
+    --brand-accent: #ff6b35;
+    --surface: #ffffff;
+    --border-light: #e5e5e5;
+    --row-hover: #fff5ef;
+    --header-bg: #f7f8fc;
+    --text-main: #333;
+    --text-muted: #777;
+}
+
+/* =========================================
+   TARJETAS DE AUDITORÍA (Dashboard)
+   ========================================= */
+.audit-card {
+    border: none;
+    border-radius: 16px;
+    background-color: var(--surface);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.audit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.audit-card .card-body {
+    padding: 2rem;
+}
+
+.audit-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2rem;
+    color: white;
+}
+
+.audit-icon.accesos {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.audit-icon.sesiones {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.audit-icon.predicciones {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+}
+
+.audit-card .card-title {
+    color: var(--brand-primary);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.audit-card .card-text {
+    font-size: 0.9rem;
+    min-height: 40px;
+}
+
+.btn-audit {
+    background-color: var(--brand-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-audit:hover {
+    background-color: var(--brand-accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+/* =========================================
+   INFORMACIÓN DEL SISTEMA
+   ========================================= */
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--header-bg);
+    border-radius: 10px;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+}
+
+.stat-item h6 {
+    margin: 0;
+    color: var(--brand-primary);
+    font-weight: 600;
+}
+
+/* =========================================
+   BREADCRUMB
+   ========================================= */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 0.5rem;
+}
+
+.breadcrumb-item a {
+    color: var(--brand-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--brand-accent);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-muted);
+}
+
+/* =========================================
+   TABLAS DE AUDITORÍA
+   ========================================= */
+.table-audit {
+    margin-bottom: 0;
+}
+
+.table-audit thead {
+    background-color: var(--header-bg);
+}
+
+.table-audit thead th {
+    border: none;
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-audit tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table-audit tbody tr:hover {
+    background-color: var(--row-hover);
+}
+
+.table-audit tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    border-top: 1px solid var(--border-light);
+    color: var(--text-main);
+}
+
+/* Tabla de predicciones (más columnas) */
+.table-predicciones thead th,
+.table-predicciones tbody td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.table-predicciones thead th:first-child,
+.table-predicciones tbody td:first-child {
+    text-align: left;
+    padding-left: 1rem;
+}
+
+.temp-column {
+    background-color: rgba(255, 107, 53, 0.1) !important;
+}
+
+.temp-value .badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* =========================================
+   BADGES PERSONALIZADOS
+   ========================================= */
+.badge {
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+}
+
+.badge.bg-primary {
+    background-color: var(--brand-primary) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%) !important;
+}
+
+/* =========================================
+   BOTONES
+   ========================================= */
+.btn-outline-secondary {
+    border-color: var(--border-light);
+    color: var(--text-main);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: white;
+}
+
+/* =========================================
+   CARDS
+   ========================================= */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    background-color: var(--surface);
+}
+
+.card-header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-header h5 {
+    margin: 0;
+    color: var(--brand-primary);
+    font-weight: 600;
+}
+
+/* =========================================
+   ACORDEÓN (FILTROS)
+   ========================================= */
+.accordion {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.accordion-item {
+    border: none;
+    background-color: var(--surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.accordion-button {
+    background-color: var(--surface);
+    font-weight: 600;
+    color: var(--brand-primary);
+    padding: 1rem 1.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #edeffe;
+    color: var(--brand-primary);
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: var(--border-light);
+}
+
+.accordion-body {
+    background-color: var(--surface);
+    padding: 1.5rem;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* =========================================
+   PAGINACIÓN
+   ========================================= */
+.pagination {
+    gap: 0.25rem;
+}
+
+.pagination .page-link {
+    color: var(--brand-primary);
+    border-radius: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-light);
+    transition: all 0.2s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: var(--header-bg);
+    border-color: var(--brand-primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--brand-accent);
+    border-color: var(--brand-accent);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background-color: var(--header-bg);
+}
+
+/* =========================================
+   ANIMACIONES
+   ========================================= */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.audit-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.audit-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.audit-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 768px) {
+    .audit-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .audit-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+
+    .table-predicciones {
+        font-size: 0.75rem;
+    }
+
+    .stat-item {
+        margin-bottom: 1rem;
+    }
+
+    .accordion-body .row {
+        gap: 1rem;
+    }
+}

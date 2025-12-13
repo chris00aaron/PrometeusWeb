@@ -40,7 +40,7 @@ public class AuditoriaService {
                 .username(usuario.getUsername())
                 .clave(usuario.getClave())
                 .rol(usuario.getRol().toString())
-                .fecha_prediccion(LocalDateTime.now())
+                .fechaPrediccion(LocalDateTime.now())
                 .ambiente(dto.getAmbiente().doubleValue())
                 .coolant(dto.getCoolant().doubleValue())
                 .u_d(dto.getU_d().doubleValue())
