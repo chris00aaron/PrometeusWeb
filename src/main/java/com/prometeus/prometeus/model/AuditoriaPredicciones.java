@@ -41,5 +41,7 @@ public class AuditoriaPredicciones {
     private Double i_q;
     private Integer motor_speed;
     private Double temperatura;
-    private LocalDateTime fecha_prediccion;
+
+    @jakarta.persistence.Column(name = "fecha_prediccion")
+    private LocalDateTime fechaPrediccion;
 }

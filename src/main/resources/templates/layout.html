@@ -46,6 +46,11 @@
                     <i class="fas fa-cog"></i> Registrar
                 </a>
             </div>
+            <div class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')">
+                <a th:href="@{/admin/auditorias}" class="nav-link">
+                    <i class="fas fa-clipboard-list"></i> Auditorías
+                </a>
+            </div>
             <form th:action="@{/logout}" method="post">
                 <button class="logout-btn mt-auto mb-3">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
