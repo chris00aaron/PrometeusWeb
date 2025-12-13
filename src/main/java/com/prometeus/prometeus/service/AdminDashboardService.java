@@ -102,4 +102,55 @@ public class AdminDashboardService {
 
         return formattedData;
     }
+
+    /**
+     * Obtiene la distribución de usuarios por rol para el gráfico circular.
+     * 
+     * @return Lista de Object[] con [String Rol, Long Count]
+     */
+    public List<Object[]> getUserDistributionByRole() {
+        List<Object[]> distribution = new ArrayList<>();
+
+        long administradores = usuarioRepository.countByRol(com.prometeus.prometeus.model.Rol.ADMINISTRADOR);
+        long trabajadores = usuarioRepository.countByRol(com.prometeus.prometeus.model.Rol.TRABAJADOR);
+
+        distribution.add(new Object[] { "Administradores", administradores });
+        distribution.add(new Object[] { "Trabajadores", trabajadores });
+
+        return distribution;
+    }
+
+    /**
+     * Obtiene la tendencia de predicciones de los últimos 7 días.
+     * 
+     * @return Lista de Object[] con [String Fecha (dd/MM), Long Count]
+     */
+    public List<Object[]> getPredictionsTrend7Days() {
+        List<Object[]> trend = new ArrayList<>();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate startDate = today.minusDays(6);
+
+        // Obtener datos de la BD
+        java.time.LocalDateTime startDateTime = startDate.atStartOfDay();
+        List<Object[]> dbData = prediccionRepository.countPredictionsByDay(startDateTime);
+
+        // Crear un mapa para acceso rápido
+        Map<java.time.LocalDate, Long> dataMap = new HashMap<>();
+        for (Object[] row : dbData) {
+            java.time.LocalDate date = (java.time.LocalDate) row[0];
+            Long count = (Long) row[1];
+            dataMap.put(date, count);
+        }
+
+        // Crear la lista con todos los días (incluyendo los que tienen 0)
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM");
+        for (int i = 0; i < 7; i++) {
+            java.time.LocalDate date = startDate.plusDays(i);
+            String formattedDate = date.format(formatter);
+            Long count = dataMap.getOrDefault(date, 0L);
+            trend.add(new Object[] { formattedDate, count });
+        }
+
+        return trend;
+    }
 }

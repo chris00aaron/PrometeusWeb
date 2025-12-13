@@ -70,7 +70,8 @@
                         </div>
                     </div>
                     <div th:if="${ultimoAcceso != null}">
-                        <p class="metric-value" th:text="${#temporals.format(ultimoAcceso.fechaInicioSesion, 'dd/MM HH:mm')}"></p>
+                        <p class="metric-value"
+                            th:text="${#temporals.format(ultimoAcceso.fechaInicioSesion, 'dd/MM HH:mm')}"></p>
                         <p class="last-login-info">
                             Usuario: <strong th:text="${ultimoAcceso.username}"></strong>
                         </p>
@@ -83,7 +84,7 @@
         </div>
 
         <div class="row g-4 mb-4">
-            
+
             <div class="col-lg-6">
                 <div class="card h-100">
                     <div class="card-header">
@@ -91,10 +92,14 @@
                         Parámetros de Entrada Promedio
                     </div>
                     <div class="card-body">
-                        <div th:if="${inputParamsAvg.isEmpty()}" class="d-flex flex-column align-items-center justify-content-center w-100 text-muted" style="min-height: 200px;">
-                            <i class="fas fa-info-circle me-2 mb-2"></i> No hay predicciones para calcular los promedios.
+                        <div th:if="${inputParamsAvg.isEmpty()}"
+                            class="d-flex flex-column align-items-center justify-content-center w-100 text-muted"
+                            style="min-height: 200px;">
+                            <i class="fas fa-info-circle me-2 mb-2"></i> No hay predicciones para calcular los
+                            promedios.
                         </div>
-                        <canvas id="inputParamsChart" th:classappend="${inputParamsAvg.isEmpty()} ? 'd-none' : ''" style="max-height: 360px;"></canvas>
+                        <canvas id="inputParamsChart" th:classappend="${inputParamsAvg.isEmpty()} ? 'd-none' : ''"
+                            style="max-height: 360px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -106,46 +111,36 @@
                         Predicciones por Usuario (Top 5)
                     </div>
                     <div class="card-body">
-                        <div th:if="${topUsuarios.isEmpty()}" class="d-flex flex-column align-items-center justify-content-center w-100 text-muted" style="min-height: 200px;">
+                        <div th:if="${topUsuarios.isEmpty()}"
+                            class="d-flex flex-column align-items-center justify-content-center w-100 text-muted"
+                            style="min-height: 200px;">
                             <i class="fas fa-info-circle me-2 mb-2"></i> No hay predicciones para calcular el Top 5.
                         </div>
-                        <canvas id="topUsersChart" th:classappend="${topUsuarios.isEmpty()} ? 'd-none' : ''" style="max-height: 360px;"></canvas>
+                        <canvas id="topUsersChart" th:classappend="${topUsuarios.isEmpty()} ? 'd-none' : ''"
+                            style="max-height: 360px;"></canvas>
                     </div>
                 </div>
             </div>
 
         </div>
-        
+
         <div class="row g-4">
-            
+
             <div class="col-lg-6">
                 <div class="card h-100">
                     <div class="card-header">
-                        <i class="fas fa-star me-2" style="color:#ff6b35;"></i>
-                        Top 5 Usuarios Más Activos (Detalle)
+                        <i class="fas fa-users-cog me-2" style="color:#1a1464;"></i>
+                        Distribución de Usuarios por Rol
                     </div>
-                    <div class="card-body p-3">
-                        <div class="table-responsive">
-                            <table class="table table-dashboard">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Usuario</th>
-                                        <th class="text-end">Predicciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="userStat, stat : ${topUsuarios}">
-                                        <td th:text="${stat.index + 1}">1</td>
-                                        <td th:text="${userStat[0]}">username1</td>
-                                        <td class="text-end top-user-count" th:text="${userStat[1]}">120</td>
-                                    </tr>
-                                    <tr th:if="${topUsuarios.isEmpty()}">
-                                        <td colspan="3" class="text-center text-muted">No hay registros de predicciones.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <div th:if="${roleDistribution.isEmpty()}"
+                            class="d-flex flex-column align-items-center justify-content-center w-100 text-muted"
+                            style="min-height: 200px;">
+                            <i class="fas fa-info-circle me-2 mb-2"></i> No hay usuarios registrados.
                         </div>
+                        <canvas id="roleDistributionChart"
+                            th:classappend="${roleDistribution.isEmpty()} ? 'd-none' : ''"
+                            style="max-height: 300px; max-width: 300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -153,53 +148,39 @@
             <div class="col-lg-6">
                 <div class="card h-100">
                     <div class="card-header">
-                        <i class="fas fa-user-shield me-2" style="color:#1a1464;"></i>
-                        Auditoría: Creaciones Recientes
+                        <i class="fas fa-chart-line me-2" style="color:#ff6b35;"></i>
+                        Tendencia de Predicciones (Últimos 7 días)
                     </div>
-                    <div class="card-body p-3">
-                        <div class="table-responsive">
-                            <table class="table table-dashboard">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Admin</th>
-                                        <th>Usuario Creado</th>
-                                        <th>Rol</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="access : ${creacionesRecientes}">
-                                        <td th:text="${#temporals.format(access.fechaCreacionUsuario, 'dd/MM HH:mm')}"></td>
-                                        <td th:text="${access.usernameAdmin}"></td>
-                                        <td th:text="${access.usernameNuevo}"></td>
-                                        <td th:text="${access.rolNuevo}"></td>
-                                    </tr>
-                                    <tr th:if="${creacionesRecientes.isEmpty()}">
-                                        <td colspan="4" class="text-center text-muted">No hay actividad de creación de usuarios.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="card-body">
+                        <div th:if="${predictionsTrend.isEmpty()}"
+                            class="d-flex flex-column align-items-center justify-content-center w-100 text-muted"
+                            style="min-height: 200px;">
+                            <i class="fas fa-info-circle me-2 mb-2"></i> No hay datos de predicciones.
                         </div>
+                        <canvas id="predictionsTrendChart"
+                            th:classappend="${predictionsTrend.isEmpty()} ? 'd-none' : ''"
+                            style="max-height: 300px;"></canvas>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-    
+
     <th:block th:fragment="extraScripts">
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
         <script th:inline="javascript">
-            document.addEventListener('DOMContentLoaded', function() {
-                
+            document.addEventListener('DOMContentLoaded', function () {
+
                 // =========================================================
                 // GRÁFICO 1: PROMEDIO DE PARÁMETROS (BAR CHART HORIZONTAL)
                 // =========================================================
-                const inputParamsData = /*[[${inputParamsAvg}]]*/ []; 
-                
+                const inputParamsData = /*[[${inputParamsAvg}]]*/[];
+
                 if (inputParamsData && inputParamsData.length > 0) {
-                    const labelsParams = inputParamsData.map(item => item[0]); 
-                    const dataParams = inputParamsData.map(item => item[1]); 
+                    const labelsParams = inputParamsData.map(item => item[0]);
+                    const dataParams = inputParamsData.map(item => item[1]);
 
                     const ctxParams = document.getElementById('inputParamsChart').getContext('2d');
                     new Chart(ctxParams, {
@@ -209,7 +190,7 @@
                             datasets: [{
                                 label: 'Valor Promedio',
                                 data: dataParams,
-                                backgroundColor: '#ff6b35', 
+                                backgroundColor: '#ff6b35',
                                 borderColor: '#e55a2b',
                                 borderWidth: 1
                             }]
@@ -217,7 +198,7 @@
                         options: {
                             indexAxis: 'y',
                             responsive: true,
-                            maintainAspectRatio: false, 
+                            maintainAspectRatio: false,
                             scales: {
                                 x: {
                                     beginAtZero: true,
@@ -227,7 +208,7 @@
                                     }
                                 },
                                 y: {
-                                    title: { display: false } 
+                                    title: { display: false }
                                 }
                             },
                             plugins: {
@@ -243,11 +224,11 @@
                 // GRÁFICO 2: TOP 5 USUARIOS (BAR CHART VERTICAL)
                 // =========================================================
 
-                const topUsersData = /*[[${topUsuarios}]]*/ [];
-                
+                const topUsersData = /*[[${topUsuarios}]]*/[];
+
                 if (topUsersData && topUsersData.length > 0) {
-                    const labels = topUsersData.map(item => item[0]); 
-                    const data = topUsersData.map(item => item[1]); 
+                    const labels = topUsersData.map(item => item[0]);
+                    const data = topUsersData.map(item => item[1]);
 
                     const ctx = document.getElementById('topUsersChart').getContext('2d');
                     new Chart(ctx, {
@@ -257,7 +238,7 @@
                             datasets: [{
                                 label: 'Número de Predicciones',
                                 data: data,
-                                backgroundColor: '#1a1464', 
+                                backgroundColor: '#1a1464',
                                 borderColor: '#1a1464',
                                 borderWidth: 1,
                                 borderRadius: 6
@@ -265,7 +246,7 @@
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: false, 
+                            maintainAspectRatio: false,
                             scales: {
                                 y: {
                                     beginAtZero: true,
@@ -277,10 +258,125 @@
                             },
                             plugins: {
                                 legend: {
-                                    display: false 
+                                    display: false
                                 },
                                 title: {
                                     display: false
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // =========================================================
+                // GRÁFICO 3: DISTRIBUCIÓN DE USUARIOS POR ROL (PIE CHART)
+                // =========================================================
+                const roleDistributionData = /*[[${roleDistribution}]]*/[];
+
+                if (roleDistributionData && roleDistributionData.length > 0) {
+                    const roleLabels = roleDistributionData.map(item => item[0]);
+                    const roleCounts = roleDistributionData.map(item => item[1]);
+
+                    const ctxRole = document.getElementById('roleDistributionChart').getContext('2d');
+                    new Chart(ctxRole, {
+                        type: 'pie',
+                        data: {
+                            labels: roleLabels,
+                            datasets: [{
+                                data: roleCounts,
+                                backgroundColor: ['#1a1464', '#ff6b35'],
+                                borderColor: ['#13104d', '#e55a2b'],
+                                borderWidth: 2,
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 20,
+                                        font: { size: 14 }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const value = context.parsed;
+                                            const percentage = ((value / total) * 100).toFixed(1);
+                                            return `${context.label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // =========================================================
+                // GRÁFICO 4: TENDENCIA DE PREDICCIONES (LINE CHART)
+                // =========================================================
+                const predictionsTrendData = /*[[${predictionsTrend}]]*/[];
+
+                if (predictionsTrendData && predictionsTrendData.length > 0) {
+                    const trendLabels = predictionsTrendData.map(item => item[0]);
+                    const trendCounts = predictionsTrendData.map(item => item[1]);
+
+                    const ctxTrend = document.getElementById('predictionsTrendChart').getContext('2d');
+                    new Chart(ctxTrend, {
+                        type: 'line',
+                        data: {
+                            labels: trendLabels,
+                            datasets: [{
+                                label: 'Predicciones',
+                                data: trendCounts,
+                                fill: true,
+                                backgroundColor: 'rgba(255, 107, 53, 0.2)',
+                                borderColor: '#ff6b35',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                pointBackgroundColor: '#ff6b35',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1,
+                                        precision: 0
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Cantidad'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Fecha'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `${context.parsed.y} predicciones`;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -290,4 +386,5 @@
         </script>
     </th:block>
 </body>
+
 </html>
