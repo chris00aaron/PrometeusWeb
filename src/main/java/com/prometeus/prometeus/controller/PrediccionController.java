@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.prometeus.prometeus.dto.PrediccionRequest;
-import com.prometeus.prometeus.model.Prediccion;
+
 import com.prometeus.prometeus.security.UsuarioDetallesSecurity;
 import com.prometeus.prometeus.service.CSVService;
 import com.prometeus.prometeus.service.PrediccionService;

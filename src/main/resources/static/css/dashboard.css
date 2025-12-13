@@ -1,0 +1,112 @@
+/* Estilos específicos para el Dashboard */
+
+.metric-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 15px;
+}
+
+.metric-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #888;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1464;
+    line-height: 1;
+}
+
+/* Iconos de las tarjetas */
+.metric-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.bg-primary-prometeus {
+    background-color: #1a1464;
+}
+
+.bg-accent-prometeus {
+    background-color: #ff6b35;
+}
+
+.bg-info-prometeus {
+    background-color: #667eea; /* Usando un color similar al de crear-usuario.css */
+}
+
+/* Tablas del Dashboard (Top Usuarios y Auditoría) */
+.table-dashboard {
+    /* Mismo estilo que la tabla del historial para consistencia */
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table-dashboard thead th {
+    background-color: #f7f8fc;
+    border: none;
+    font-weight: 600;
+    color: #1a1464;
+}
+
+.table-dashboard tbody tr {
+    background-color: white;
+    border-radius: 8px;
+    transition: 0.2s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table-dashboard tbody tr:hover {
+    background-color: #fff0eb;
+}
+
+.table-dashboard tbody td {
+    padding: 12px;
+    color: #333;
+    border: none;
+}
+
+.top-user-count {
+    font-weight: 700;
+    color: #ff6b35;
+    font-size: 1.1rem;
+}
+
+/* Último Acceso Específico */
+.last-login-info {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.last-login-info strong {
+    color: #1a1464;
+}
