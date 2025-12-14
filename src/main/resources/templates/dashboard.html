@@ -91,7 +91,7 @@
                         <i class="fas fa-sliders-h me-2" style="color:#ff6b35;"></i>
                         Parámetros de Entrada Promedio
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="min-height: 320px;">
                         <div th:if="${inputParamsAvg.isEmpty()}"
                             class="d-flex flex-column align-items-center justify-content-center w-100 text-muted"
                             style="min-height: 200px;">
@@ -99,7 +99,7 @@
                             promedios.
                         </div>
                         <canvas id="inputParamsChart" th:classappend="${inputParamsAvg.isEmpty()} ? 'd-none' : ''"
-                            style="max-height: 360px;"></canvas>
+                            style="height: 300px !important;"></canvas>
                     </div>
                 </div>
             </div>
@@ -208,7 +208,10 @@
                                     }
                                 },
                                 y: {
-                                    title: { display: false }
+                                    title: { display: false },
+                                    ticks: {
+                                        autoSkip: false
+                                    }
                                 }
                             },
                             plugins: {

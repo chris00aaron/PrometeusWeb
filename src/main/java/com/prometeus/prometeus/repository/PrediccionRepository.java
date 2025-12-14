@@ -35,7 +35,7 @@ public interface PrediccionRepository extends JpaRepository<Prediccion, UUID> {
             "LIMIT 5")
     List<Object[]> findTop5ActiveUsers();
 
-    @Query("SELECT AVG(p.voltajeD), AVG(p.voltajeQ), AVG(p.corrienteD), AVG(p.corrienteQ), AVG(p.velocidad) FROM Prediccion p")
+    @Query("SELECT AVG(p.ambiente), AVG(p.refrigeracion), AVG(p.voltajeD), AVG(p.voltajeQ), AVG(p.corrienteD), AVG(p.corrienteQ), AVG(p.velocidad) FROM Prediccion p")
     List<Object[]> findAverageInputParameters();
 
     // Obtiene el conteo de predicciones por día (últimos 7 días)

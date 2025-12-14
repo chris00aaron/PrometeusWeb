@@ -84,7 +84,8 @@ public class AdminDashboardService {
 
         if (rawData != null && rawData.length > 0 && rawData[0] != null) {
 
-            String[] parameterNames = { "Voltaje D", "Voltaje Q", "Corriente D", "Corriente Q", "Velocidad" };
+            String[] parameterNames = { "Ambiente", "Refrigerante", "Voltaje D", "Voltaje Q", "Corriente D",
+                    "Corriente Q", "Velocidad" };
 
             for (int i = 0; i < rawData.length; i++) {
                 if (rawData[i] != null) {
