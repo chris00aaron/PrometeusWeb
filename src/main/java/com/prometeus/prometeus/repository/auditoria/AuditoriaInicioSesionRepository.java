@@ -12,7 +12,9 @@ import com.prometeus.prometeus.model.AuditoriaInicioSesion;
 @Repository
 public interface AuditoriaInicioSesionRepository extends JpaRepository<AuditoriaInicioSesion, Long> {
     Page<AuditoriaInicioSesion> findByFechaInicioSesionBetweenAndUsernameContainingIgnoreCaseAndRolContainingIgnoreCase(
-            LocalDateTime start, LocalDateTime end, String username, String rol, Pageable pageable);    
+            LocalDateTime start, LocalDateTime end, String username, String rol, Pageable pageable);
+
+    
             
     Optional<AuditoriaInicioSesion> findTopByOrderByFechaInicioSesionDesc();
 }

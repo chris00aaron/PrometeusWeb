@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AdminDashboardService {
-    
+
     // Repositorios inyectados para obtener los datos
     private final UsuarioRepository usuarioRepository;
     private final PrediccionRepository prediccionRepository;
@@ -34,31 +34,31 @@ public class AdminDashboardService {
      */
     public Map<String, Object> getSummaryMetrics() {
         Map<String, Object> metrics = new HashMap<>();
-        
+
         // Métrica 1: Total de Usuarios Registrados
         metrics.put("totalUsuarios", usuarioRepository.count());
-        
+
         // Métrica 2: Total de Predicciones Históricas
         metrics.put("totalPredicciones", prediccionRepository.count());
-        
+
         // Métrica 3: Último Inicio de Sesión Auditado
         Optional<AuditoriaInicioSesion> ultimoAcceso = inicioSesionRepository.findTopByOrderByFechaInicioSesionDesc();
         metrics.put("ultimoAcceso", ultimoAcceso.orElse(null));
-        
+
         // Métrica 4: Temperatura Media Predicha Global
         BigDecimal avgTemp = prediccionRepository.findAverageTemperatura();
         metrics.put("tempMedia", (avgTemp != null) ? avgTemp.setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO);
-        
+
         return metrics;
     }
-    
+
     /**
      * Obtiene el listado de los 5 usuarios con más predicciones.
      */
     public List<Object[]> getTopActiveUsers() {
         return prediccionRepository.findTop5ActiveUsers();
     }
-    
+
     /**
      * Obtiene el listado de las últimas 5 creaciones de usuarios.
      */
@@ -67,35 +67,91 @@ public class AdminDashboardService {
     }
 
     /**
-     * Obtiene los valores promedio de los parámetros de entrada clave y los formatea para la gráfica.
+     * Obtiene los valores promedio de los parámetros de entrada clave y los
+     * formatea para la gráfica.
+     * 
      * @return Lista de Object[] con [String Parameter Name, Double Average Value]
      */
     public List<Object[]> getAverageInputParameters() {
         List<Object[]> rawDataList = prediccionRepository.findAverageInputParameters();
         List<Object[]> formattedData = new ArrayList<>();
-        
+
         if (rawDataList.isEmpty() || rawDataList.get(0) == null) {
             return formattedData;
         }
-        
+
         Object[] rawData = rawDataList.get(0);
-        
+
         if (rawData != null && rawData.length > 0 && rawData[0] != null) {
-            
-            String[] parameterNames = {"Voltaje D", "Voltaje Q", "Corriente D", "Corriente Q", "Velocidad"};
-            
+
+            String[] parameterNames = { "Ambiente", "Refrigerante", "Voltaje D", "Voltaje Q", "Corriente D",
+                    "Corriente Q", "Velocidad" };
+
             for (int i = 0; i < rawData.length; i++) {
                 if (rawData[i] != null) {
-                    BigDecimal avgValue = (BigDecimal) rawData[i];
-                    
-                    formattedData.add(new Object[]{
-                        parameterNames[i], 
-                        avgValue.setScale(2, RoundingMode.HALF_UP).doubleValue()
+                    // AVG() en JPQL retorna Double, no BigDecimal
+                    Double rawValue = (Double) rawData[i];
+                    BigDecimal avgValue = BigDecimal.valueOf(rawValue);
+
+                    formattedData.add(new Object[] {
+                            parameterNames[i],
+                            avgValue.setScale(2, RoundingMode.HALF_UP).doubleValue()
                     });
                 }
             }
         }
-        
+
         return formattedData;
+    }
+
+    /**
+     * Obtiene la distribución de usuarios por rol para el gráfico circular.
+     * 
+     * @return Lista de Object[] con [String Rol, Long Count]
+     */
+    public List<Object[]> getUserDistributionByRole() {
+        List<Object[]> distribution = new ArrayList<>();
+
+        long administradores = usuarioRepository.countByRol(com.prometeus.prometeus.model.Rol.ADMINISTRADOR);
+        long trabajadores = usuarioRepository.countByRol(com.prometeus.prometeus.model.Rol.TRABAJADOR);
+
+        distribution.add(new Object[] { "Administradores", administradores });
+        distribution.add(new Object[] { "Trabajadores", trabajadores });
+
+        return distribution;
+    }
+
+    /**
+     * Obtiene la tendencia de predicciones de los últimos 7 días.
+     * 
+     * @return Lista de Object[] con [String Fecha (dd/MM), Long Count]
+     */
+    public List<Object[]> getPredictionsTrend7Days() {
+        List<Object[]> trend = new ArrayList<>();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalDate startDate = today.minusDays(6);
+
+        // Obtener datos de la BD
+        java.time.LocalDateTime startDateTime = startDate.atStartOfDay();
+        List<Object[]> dbData = prediccionRepository.countPredictionsByDay(startDateTime);
+
+        // Crear un mapa para acceso rápido
+        Map<java.time.LocalDate, Long> dataMap = new HashMap<>();
+        for (Object[] row : dbData) {
+            java.time.LocalDate date = (java.time.LocalDate) row[0];
+            Long count = (Long) row[1];
+            dataMap.put(date, count);
+        }
+
+        // Crear la lista con todos los días (incluyendo los que tienen 0)
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM");
+        for (int i = 0; i < 7; i++) {
+            java.time.LocalDate date = startDate.plusDays(i);
+            String formattedDate = date.format(formatter);
+            Long count = dataMap.getOrDefault(date, 0L);
+            trend.add(new Object[] { formattedDate, count });
+        }
+
+        return trend;
     }
 }

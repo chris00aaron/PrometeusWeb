@@ -12,17 +12,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.prometeus.prometeus.model.Prediccion;
 
-public interface PrediccionRepository extends JpaRepository<Prediccion,UUID> {
+public interface PrediccionRepository extends JpaRepository<Prediccion, UUID> {
     List<Prediccion> findByUsuarioIdOrderByFechaCreacionDesc(Long usuarioId);
-    
+
     Page<Prediccion> findByUsuarioId(Long userId, Pageable pageable);
 
     Page<Prediccion> findByUsuarioIdAndFechaCreacionBetween(
             Long userId,
             LocalDateTime start,
             LocalDateTime end,
-            Pageable pageable
-    );
+            Pageable pageable);
 
     long count();
 
@@ -30,12 +29,20 @@ public interface PrediccionRepository extends JpaRepository<Prediccion,UUID> {
     BigDecimal findAverageTemperatura();
 
     @Query("SELECT p.usuario.username, COUNT(p.usuario.id) " +
-           "FROM Prediccion p " +
-           "GROUP BY p.usuario.username " +
-           "ORDER BY COUNT(p.usuario.id) DESC " +
-           "LIMIT 5")
+            "FROM Prediccion p " +
+            "GROUP BY p.usuario.username " +
+            "ORDER BY COUNT(p.usuario.id) DESC " +
+            "LIMIT 5")
     List<Object[]> findTop5ActiveUsers();
 
-    @Query("SELECT AVG(p.voltajeD), AVG(p.voltajeQ), AVG(p.corrienteD), AVG(p.corrienteQ), AVG(p.velocidad) FROM Prediccion p")
+    @Query("SELECT AVG(p.ambiente), AVG(p.refrigeracion), AVG(p.voltajeD), AVG(p.voltajeQ), AVG(p.corrienteD), AVG(p.corrienteQ), AVG(p.velocidad) FROM Prediccion p")
     List<Object[]> findAverageInputParameters();
+
+    // Obtiene el conteo de predicciones por día (últimos 7 días)
+    @Query("SELECT CAST(p.fechaCreacion AS LocalDate), COUNT(p) " +
+            "FROM Prediccion p " +
+            "WHERE p.fechaCreacion >= :startDate " +
+            "GROUP BY CAST(p.fechaCreacion AS LocalDate) " +
+            "ORDER BY CAST(p.fechaCreacion AS LocalDate)")
+    List<Object[]> countPredictionsByDay(LocalDateTime startDate);
 }

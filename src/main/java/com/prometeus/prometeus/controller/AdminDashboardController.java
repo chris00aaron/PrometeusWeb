@@ -16,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class AdminDashboardController {
-    
+
     private final AdminDashboardService dashboardService;
 
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public String showDashboard(Model model) {
-        
+
         // 1. Obtener métricas de resumen
         Map<String, Object> summaryMetrics = dashboardService.getSummaryMetrics();
         model.addAllAttributes(summaryMetrics);
@@ -30,13 +30,19 @@ public class AdminDashboardController {
         // 2. Obtener usuarios más activos
         List<Object[]> topUsers = dashboardService.getTopActiveUsers();
         model.addAttribute("topUsuarios", topUsers);
-        
+
         // 3. Obtener actividad de administración
         List<AuditoriaAccesos> recentCreations = dashboardService.getLastUserCreations();
         model.addAttribute("creacionesRecientes", recentCreations);
 
         // 4. Obtener Promedios de Parámetros de Entrada (NUEVA MÉTRICA DE BARRAS)
         model.addAttribute("inputParamsAvg", dashboardService.getAverageInputParameters());
+
+        // 5. Obtener Distribución de Usuarios por Rol (GRÁFICO CIRCULAR)
+        model.addAttribute("roleDistribution", dashboardService.getUserDistributionByRole());
+
+        // 6. Obtener Tendencia de Predicciones (últimos 7 días)
+        model.addAttribute("predictionsTrend", dashboardService.getPredictionsTrend7Days());
 
         return "dashboard";
     }

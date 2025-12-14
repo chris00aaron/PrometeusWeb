@@ -12,7 +12,9 @@ import com.prometeus.prometeus.model.AuditoriaAccesos;
 @Repository
 public interface AuditoriaAccesosRepository extends JpaRepository<AuditoriaAccesos, Long> {
     Page<AuditoriaAccesos> findByFechaCreacionUsuarioBetweenAndUsernameAdminContainingIgnoreCaseAndRolNuevoContainingIgnoreCase(
-            LocalDateTime start, LocalDateTime end, String usernameAdmin, String rolNuevo, Pageable pageable);    
+            LocalDateTime start, LocalDateTime end, String usernameAdmin, String rolNuevo, Pageable pageable);
+
+    
     
     List<AuditoriaAccesos> findTop5ByOrderByFechaCreacionUsuarioDesc();
 }
