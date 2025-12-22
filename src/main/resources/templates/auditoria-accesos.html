@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Auditoría de Accesos', ~{::extraStyles})}">
+    <th:block th:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/auditoria.css}" />
+    </th:block>
+</head>
+
+<body th:replace="~{layout :: layout('Auditoría de Accesos', ~{::content}, ~{::extraScripts})}">
+
+    <th:block th:fragment="extraScripts">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </th:block>
+
+    <div th:fragment="content">
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-2">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/admin/auditorias}">Auditorías</a>
+                        </li>
+                        <li class="breadcrumb-item active">Creación de Usuarios</li>
+                    </ol>
+                </nav>
+                <h2 class="mb-2">
+                    <i class="fas fa-user-plus me-2 text-primary"></i>
+                    Auditoría de Creación de Usuarios
+                </h2>
+                <p class="text-muted mb-0">
+                    Registro de usuarios creados por administradores del sistema.
+                </p>
+            </div>
+            <a th:href="@{/admin/auditorias}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+
+        <!-- FILTRO EN ACORDEÓN -->
+        <div class="accordion mb-4" id="filtersAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFilter">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFilter" aria-expanded="false">
+                        <i class="fas fa-filter me-2"></i> Filtros de búsqueda
+                    </button>
+                </h2>
+
+                <div id="collapseFilter" class="accordion-collapse collapse" aria-labelledby="headingFilter">
+                    <div class="accordion-body">
+                        <form method="get" th:action="@{/admin/auditoria/accesos}">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="filter-label">Fecha Inicio</label>
+                                    <input type="date" name="startDate" class="form-control" th:value="${startDate}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="filter-label">Fecha Fin</label>
+                                    <input type="date" name="endDate" class="form-control" th:value="${endDate}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="filter-label">Usuario Admin</label>
+                                    <input type="text" name="username" class="form-control" placeholder="Buscar..."
+                                        th:value="${username}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="filter-label">Rol Asignado</label>
+                                    <select name="rol" class="form-select">
+                                        <option value="">Todos</option>
+                                        <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                            th:selected="${r.name() == rol}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                    <a th:href="@{/admin/auditoria/accesos}" class="btn btn-secondary">
+                                        <i class="fas fa-undo"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de registros -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Registros de Creación
+                </h5>
+                <span class="badge bg-primary" th:text="${accesosPage.totalElements} + ' registros'"></span>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-audit mb-0">
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Administrador</th>
+                                <th>Usuario Creado</th>
+                                <th>Rol Asignado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="acceso : ${accesos}">
+                                <td>
+                                    <i class="fas fa-calendar-alt me-2 text-muted"></i>
+                                    <span
+                                        th:text="${#temporals.format(acceso.fechaCreacionUsuario, 'dd/MM/yyyy HH:mm:ss')}"></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-user-shield me-1"></i>
+                                        <span th:text="${acceso.usernameAdmin}"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <i class="fas fa-user me-2 text-success"></i>
+                                    <span th:text="${acceso.usernameNuevo}"></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${acceso.rolNuevo}"></span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(accesos)}">
+                                <td colspan="4" class="text-center text-muted py-5">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    No hay registros de creación de usuarios.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINACIÓN -->
+                <nav th:if="${accesosPage.totalPages > 1}" class="mt-3 p-3">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item" th:classappend="${accesosPage.first} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/admin/auditoria/accesos(page=${currentPage - 1}, startDate=${startDate}, endDate=${endDate}, username=${username}, rol=${rol})}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, accesosPage.totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:text="${i + 1}"
+                                th:href="@{/admin/auditoria/accesos(page=${i}, startDate=${startDate}, endDate=${endDate}, username=${username}, rol=${rol})}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${accesosPage.last} ? 'disabled'">
+                            <a class="page-link"
+                                th:href="@{/admin/auditoria/accesos(page=${currentPage + 1}, startDate=${startDate}, endDate=${endDate}, username=${username}, rol=${rol})}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
