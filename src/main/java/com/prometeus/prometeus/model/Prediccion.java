@@ -60,9 +60,6 @@ public class Prediccion {
     @Column(nullable = false)
     private Integer velocidad;
 
-    @Column(precision = 10, scale = 3, nullable = false)
-    private BigDecimal torque;
-
     @JsonProperty("i_d")
     @Column(name = "corriente_d", precision = 10, scale = 3, nullable = false)
     private BigDecimal corrienteD;

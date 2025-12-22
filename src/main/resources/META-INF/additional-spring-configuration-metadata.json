@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "service.prediction.base-url",
+    "type": "java.lang.String",
+    "description": "A description for 'service.api-prediction.base-url'"
+  },
+  {
+    "name": "service.prediction.path",
+    "type": "java.lang.String",
+    "description": "A description for 'service.prediction.path'"
+  }
+]}

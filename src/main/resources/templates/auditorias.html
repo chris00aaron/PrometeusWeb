@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Panel de Auditorías', ~{::extraStyles})}">
+    <th:block th:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/auditoria.css}" />
+    </th:block>
+</head>
+
+<body th:replace="~{layout :: layout('Panel de Auditorías', ~{::content}, null)}">
+
+    <div th:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-2">Panel de Auditorías</h2>
+                <p class="text-muted mb-0">
+                    Monitorea las actividades registradas en el sistema.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tarjetas de navegación -->
+        <div class="row g-4">
+            <!-- Auditoría de Accesos -->
+            <div class="col-md-4">
+                <div class="card audit-card">
+                    <div class="card-body text-center">
+                        <div class="audit-icon accesos">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h5 class="card-title mt-3">Creación de Usuarios</h5>
+                        <p class="card-text text-muted">
+                            Registro de usuarios creados por administradores.
+                        </p>
+                        <a th:href="@{/admin/auditoria/accesos}" class="btn btn-audit">
+                            <i class="fas fa-eye me-2"></i>Ver Registros
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auditoría de Sesiones -->
+            <div class="col-md-4">
+                <div class="card audit-card">
+                    <div class="card-body text-center">
+                        <div class="audit-icon sesiones">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h5 class="card-title mt-3">Inicios de Sesión</h5>
+                        <p class="card-text text-muted">
+                            Historial de accesos al sistema por usuarios.
+                        </p>
+                        <a th:href="@{/admin/auditoria/sesiones}" class="btn btn-audit">
+                            <i class="fas fa-eye me-2"></i>Ver Registros
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auditoría de Predicciones -->
+            <div class="col-md-4">
+                <div class="card audit-card">
+                    <div class="card-body text-center">
+                        <div class="audit-icon predicciones">
+                            <i class="fas fa-temperature-high"></i>
+                        </div>
+                        <h5 class="card-title mt-3">Predicciones Realizadas</h5>
+                        <p class="card-text text-muted">
+                            Registro de todas las predicciones de temperatura.
+                        </p>
+                        <a th:href="@{/admin/auditoria/predicciones}" class="btn btn-audit">
+                            <i class="fas fa-eye me-2"></i>Ver Registros
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen rápido -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Información del Sistema de Auditoría
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <i class="fas fa-shield-alt text-primary"></i>
+                            <div>
+                                <h6>Seguridad</h6>
+                                <small class="text-muted">Todos los accesos son registrados automáticamente</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <i class="fas fa-lock text-success"></i>
+                            <div>
+                                <h6>Privacidad</h6>
+                                <small class="text-muted">Las contraseñas nunca se muestran en los registros</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-item">
+                            <i class="fas fa-history text-warning"></i>
+                            <div>
+                                <h6>Trazabilidad</h6>
+                                <small class="text-muted">Cada acción incluye fecha, hora y usuario</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

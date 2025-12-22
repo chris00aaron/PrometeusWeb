@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Cargar Datos CSV', ~{::extraStyles})}">
+    <th:block th:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/prediction-multi.css}" />
+    </th:block>
+</head>
+
+<body th:replace="~{layout :: layout('Carga CSV', ~{::content}, ~{::extraScripts})}">
+
+    <div th:fragment="content">
+        <div class="center-container">
+
+            <h1 class="page-title">IMPORTACIÓN DE DATOS</h1>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-database me-2" style="color:#ff6b35;"></i>
+                    Cargar Archivo CSV
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form id="uploadForm" th:action="@{/predict/multiple}" method="post" enctype="multipart/form-data">
+
+                        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <div class="upload-text">Arrastra tu archivo aquí</div>
+                            <p class="upload-subtext">o haz clic para buscar en tu ordenador</p>
+                            <input type="file" id="fileInput" name="archivo" accept=".csv">
+                        </div>
+
+                        <div class="file-selected" id="fileSelectedBox">
+                            <div class="file-info">
+                                <i class="fas fa-file-csv file-icon"></i>
+                                <div>
+                                    <div id="fileName" style="font-weight:600; color:#1a1464;">datos.csv</div>
+                                    <small class="text-muted" id="fileSize">0 MB</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-trash-alt remove-file" onclick="removeFile(event)"
+                                title="Eliminar archivo"></i>
+                        </div>
+
+                        <div class="alert-limit">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="alert-content">
+                                <h6>Restricción de tamaño</h6>
+                                <p>Para garantizar un rendimiento óptimo, el archivo CSV <strong>no debe superar los 200
+                                        MB</strong>.</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-predict">
+                            Procesar Datos <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:fragment="extraScripts">
+        <script>
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const fileSelectedBox = document.getElementById('fileSelectedBox');
+            const fileNameDisplay = document.getElementById('fileName');
+            const fileSizeDisplay = document.getElementById('fileSize');
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
+                dropZone.addEventListener(ev, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(ev => {
+                dropZone.addEventListener(ev, () => dropZone.classList.add('dragover'));
+            });
+
+            ['dragleave', 'drop'].forEach(ev => {
+                dropZone.addEventListener(ev, () => dropZone.classList.remove('dragover'));
+            });
+
+            dropZone.addEventListener('drop', handleDrop);
+
+            function handleDrop(e) {
+                handleFiles(e.dataTransfer.files);
+            }
+
+            fileInput.addEventListener('change', () => {
+                handleFiles(fileInput.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length === 0) return;
+
+                const file = files[0];
+                if (!file.name.toLowerCase().endsWith('.csv')) {
+                    alert('Por favor sube un archivo con extensión .csv');
+                    return;
+                }
+
+                dropZone.style.display = 'none';
+                fileSelectedBox.style.display = 'flex';
+                fileNameDisplay.textContent = file.name;
+
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                fileSizeDisplay.textContent = `${sizeMB} MB`;
+
+                if (sizeMB > 200) {
+                    fileSizeDisplay.style.color = 'red';
+                    alert('El archivo supera los 200 MB permitidos.');
+                } else {
+                    fileSizeDisplay.style.color = '#6c757d';
+                }
+            }
+
+            function removeFile(e) {
+                e.stopPropagation();
+                fileInput.value = '';
+                fileSelectedBox.style.display = 'none';
+                dropZone.style.display = 'block';
+            }
+        </script>
+    </th:block>
+</body>
+</html>
