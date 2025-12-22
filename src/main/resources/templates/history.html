@@ -259,22 +259,33 @@
             <nav th:if="${predictionsPage.totalPages > 1}" class="mt-3">
                 <ul class="pagination justify-content-center">
 
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/history?page=0}" title="Primera página">
+                            <i class="fa fa-angle-double-left"></i> 1
+                        </a>
+                    </li>
+
                     <li class="page-item" th:classappend="${predictionsPage.first} ? 'disabled'">
                         <a class="page-link" th:href="@{|/history?page=${currentPage - 1}|}">
                             <i class="fa fa-chevron-left"></i>
                         </a>
                     </li>
 
-                    <li class="page-item"
-                        th:each="i : ${#numbers.sequence(0, predictionsPage.totalPages - 1)}"
-                        th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link" th:text="${i + 1}"
-                           th:href="@{|/history?page=${i}|}"></a>
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Página <span th:text="${currentPage + 1}">1</span> de <span th:text="${predictionsPage.totalPages}">100</span>
+                        </span>
                     </li>
 
                     <li class="page-item" th:classappend="${predictionsPage.last} ? 'disabled'">
                         <a class="page-link" th:href="@{|/history?page=${currentPage + 1}|}">
                             <i class="fa fa-chevron-right"></i>
+                        </a>
+                    </li>
+
+                    <li class="page-item" th:classappend="${currentPage == predictionsPage.totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{|/history?page=${predictionsPage.totalPages - 1}|}" title="Última página">
+                            <span th:text="${predictionsPage.totalPages}">1000</span> <i class="fa fa-angle-double-right"></i>
                         </a>
                     </li>
 

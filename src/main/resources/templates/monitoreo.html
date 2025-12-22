@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head
+    th:replace="~{layout :: head('Monitoreo de Motores', ~{::extraStyles})}"
+  >
+    <th:block th:fragment="extraStyles">
+      <link rel="stylesheet" th:href="@{/css/monitoreo.css}" />
+    </th:block>
+  </head>
+
+  <body
+    th:replace="~{layout :: layout('Monitoreo de Motores', ~{::content}, ~{::extraScripts})}"
+  >
+    <div th:fragment="content" class="dashboard-container">
+      <div class="header-section">
+        <h1><i class="bi bi-cpu-fill me-2"></i>Monitoreo de Motores</h1>
+        <span class="text-muted small"
+          ><i class="bi bi-broadcast me-1"></i> Datos en tiempo real</span
+        >
+      </div>
+
+      <div class="main-card">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="motorSelect" class="filter-label"
+              >MOTOR DE ACTIVACIÓN</label
+            >
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"
+                ><i class="bi bi-gear-wide-connected"></i
+              ></span>
+              <select
+                id="motorSelect"
+                class="form-select border-start-0"
+                name="motorId"
+              >
+                <th:block th:each="motor : ${motores}">
+                  <option
+                    th:value="${motor.id}"
+                    th:text="${motor.modelo}"
+                  ></option>
+                </th:block>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="timeFilter" class="filter-label">RANGO TEMPORAL</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"
+                ><i class="bi bi-clock-history"></i
+              ></span>
+              <select
+                id="timeFilter"
+                class="form-select border-start-0"
+                name="timeRange"
+              >
+                <option value="30">Últimos 30 minutos</option>
+                <option value="60">Última hora</option>
+                <option value="120">Últimas 2 horas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <div class="kpi-card">
+            <i class="bi bi-thermometer-half kpi-icon"></i>
+            <span class="kpi-label">Promedio</span>
+            <p id="averageTemperature" class="kpi-value">-</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi-card">
+            <i class="bi bi-thermometer-low kpi-icon"></i>
+            <span class="kpi-label">Mínima</span>
+            <p id="minTemperature" class="kpi-value">-</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi-card">
+            <i class="bi bi-thermometer-high kpi-icon"></i>
+            <span class="kpi-label">Máxima</span>
+            <p id="maxTemperature" class="kpi-value">-</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="kpi-card" style="border-left-color: var(--brand-accent)">
+            <i class="bi bi-activity kpi-icon"></i>
+            <span class="kpi-label">Estado Actual</span>
+            <p id="averageTemperatureState" class="kpi-value">-</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-card">
+        <h5 class="mb-4 text-muted small fw-bold">FLUJO TÉRMICO OPERATIVO</h5>
+        <div class="chart-container">
+          <canvas id="monitoringChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <th:block th:fragment="extraScripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            let bloqueado = false;
+            let data = /*[[${monitoreos}]]*/ [];
+
+            // Colores de marca para JS
+            const brandPrimary = '#1a1464';
+            const brandAccent = '#ff6b35';
+
+            const ctx = document.getElementById('monitoringChart').getContext('2d');
+            const monitoringChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Temperatura (°C)',
+                        data: [],
+                        borderColor: brandPrimary,
+                        backgroundColor: 'rgba(26, 20, 100, 0.05)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 3,
+                        pointRadius: 2,
+                        pointBackgroundColor: brandAccent
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            type: 'category',  // Usamos 'category' para mostrar números secuenciales
+
+                            position: 'bottom',
+                            ticks: {
+                                color: '#777', 
+                                stepSize: 1,  // Los valores en el eje X son números secuenciales
+                                callback: function(value, index, values) {
+                                    return index + 1;  // Mostrar 1, 2, 3, etc., en lugar de las fechas
+                                }   
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#e5e5e5' },
+                            ticks: { color: '#777' }
+                        }
+                    }
+                }
+            });
+
+            const updateGraph = () => {
+                const labels = data.map(entry => entry.timestamp);
+                const temperaturas = data.map(entry => entry.temperatura);
+
+                monitoringChart.data.labels = labels;
+                monitoringChart.data.datasets[0].data = temperaturas;
+                monitoringChart.update();
+                updateMetrics();
+            }
+
+            const consultarMonitoreo = () => {
+                if (bloqueado) return;
+                bloqueado = true;
+
+                const motorId = document.getElementById('motorSelect').value;
+                const timeRange = document.getElementById('timeFilter').value;
+
+                fetch(`/monitoreo/actualizarMonitoreo?motorId=${motorId}&minutos=${timeRange}`)
+                .then(response => response.json())
+                .then(receivedData => {
+                    data = receivedData.map(entry => ({
+                        timestamp: entry.timestamp,
+                        temperatura: entry.temperatura
+                    }));
+                    updateGraph();
+                })
+                .catch(error => console.error('Error:', error))
+                .finally(() => bloqueado = false);
+            }
+
+            const updateMetrics = () => {
+                if(data.length === 0) return;
+
+                const temperatures = data.map(entry => parseFloat(entry.temperatura));
+                const avgTemp = temperatures.reduce((acc, temp) => acc + temp, 0) / temperatures.length;
+                const minTemp = Math.min(...temperatures);
+                const maxTemp = Math.max(...temperatures);
+
+                document.getElementById('averageTemperature').textContent = avgTemp.toFixed(1) + ' °C';
+                document.getElementById('minTemperature').textContent = minTemp + ' °C';
+                document.getElementById('maxTemperature').textContent = maxTemp + ' °C';
+
+                let stateColor = '#28a745'; // Green
+                let stateText = 'Normal';
+                
+                if (avgTemp >= 85) { stateColor = '#dc3545'; stateText = 'Crítico'; }
+                else if (avgTemp >= 70) { stateColor = '#fd7e14'; stateText = 'Peligro'; }
+                else if (avgTemp >= 60) { stateColor = '#ffc107'; stateText = 'Alerta'; }
+
+                const stateEl = document.getElementById('averageTemperatureState');
+                stateEl.textContent = stateText;
+                stateEl.style.color = stateColor;
+            };
+
+            document.getElementById('motorSelect').addEventListener('change', consultarMonitoreo);
+            document.getElementById('timeFilter').addEventListener('change', consultarMonitoreo);
+
+            updateGraph();
+            setInterval(consultarMonitoreo, 60000);
+        });
+      </script>
+    </th:block>
+  </body>
+</html>

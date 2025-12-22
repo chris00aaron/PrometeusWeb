@@ -82,6 +82,25 @@ public class PrediccionService {
         return temperaturaPredicha;
     }
 
+    public BigDecimal getPrediction(PrediccionRequest dto) {
+
+        // 1. LLAMAR A LA API DE PYTHON
+        // Aquí iría tu lógica con RestTemplate o WebClient
+        RestTemplate restTemplate = new RestTemplate();
+        String urlCompleto = baseUrl + predictionPath;
+        ResponseEntity<String> response = restTemplate.postForEntity(urlCompleto, dto, String.class);
+
+        JSONObject json = new JSONObject(response.getBody());
+        BigDecimal temperaturaPredicha = json
+                .getJSONObject("temperatura_predicha")
+                .getBigDecimal("_Output__stator_winding");
+
+        temperaturaPredicha = temperaturaPredicha.setScale(2, RoundingMode.HALF_UP);
+
+        // 2. DEVOLVER EL RESULTADO
+        return temperaturaPredicha;
+    }
+
     public List<Prediccion> getHistoryForUser(Long userId) {
         return prediccionRepository.findByUsuarioIdOrderByFechaCreacionDesc(userId);
     }
