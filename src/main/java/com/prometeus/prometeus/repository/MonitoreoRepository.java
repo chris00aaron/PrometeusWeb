@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 import com.prometeus.prometeus.model.Monitoreo;
 
 public interface MonitoreoRepository extends JpaRepository<Monitoreo, Long> {
-    
+
     @Query("SELECT m FROM Monitoreo m WHERE m.motor.id = :motorId AND m.fechaIngreso >= :tiempoLimite")
-    List<Monitoreo> findMonitoreosUltimosMinutos(@Param("motorId") Long motorId, @Param("tiempoLimite") LocalDateTime tiempoLimite);
+    List<Monitoreo> findMonitoreosUltimosMinutos(@Param("motorId") Long motorId,
+            @Param("tiempoLimite") LocalDateTime tiempoLimite);
 }

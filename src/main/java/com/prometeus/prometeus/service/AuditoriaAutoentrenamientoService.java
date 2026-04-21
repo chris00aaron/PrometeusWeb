@@ -10,9 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import com.prometeus.prometeus.model.AuditoriaAutoEntrenamiento;
 import com.prometeus.prometeus.repository.auditoria.AuditoriaAutoentrenamientoRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 
 @Service
 public class AuditoriaAutoentrenamientoService {

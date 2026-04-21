@@ -32,7 +32,7 @@ public class MonitoreoController {
 
         if (!motoresActivos.isEmpty()) {
             Motor primerMotor = motoresActivos.get(0);
-            List<MonitoreoDTO> datosMonitoreo = monitoreoService.obtenerMonitoreosUltimosMinutos(primerMotor.getId(), 30)
+            List<MonitoreoDTO> datosMonitoreo = monitoreoService.obtenerMonitoreosUltimosMinutos(primerMotor.getId(), 1200)
                     .stream()
                     .map(monitoreo -> new MonitoreoDTO(monitoreo.getFechaIngreso(), monitoreo.getTemperatura().toString()))
                     .toList(); // Últimos 60 minutos

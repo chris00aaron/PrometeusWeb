@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Autoentrenamiento {
     private final AuditoriaAutoentrenamientoService auditoriaAutoentrenamientoService;
     // Ejecutar domingo a las 12 de la noche
-    @Scheduled(cron = "0 0 0 * * SUN", zone = "America/Lima")
+    //@Scheduled(cron = "0 0 0 * * SUN", zone = "America/Lima")
     public void triggerAutoentrenamiento() {
         try {
             if (!auditoriaAutoentrenamientoService.cumpleCondicionesAutoentrenamiento()) {

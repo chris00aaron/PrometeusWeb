@@ -12,7 +12,7 @@ public class BackupService {
     private static final String DB_NAME = "prometeus";
     private static final String USER = "postgres";
 
-    @Scheduled(cron = "0 0 3 * * *")  
+    //@Scheduled(cron = "0 0 3 * * *")  
     // todos los días a las 3 AM: cron = "0 0 3 * * *" 
     // cada 30s: fixedRate = 30000
     public void backupDatabase() {
